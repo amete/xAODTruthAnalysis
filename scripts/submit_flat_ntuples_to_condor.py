@@ -13,6 +13,7 @@ filelist_dir        = "/data/uclhc/uci/user/amete/truth_analysis/inputs/"
 in_job_filelist_dir = "/truth_analysis/inputs/"
 
 samples = ["sample_list_split"]
+#samples = ["mc15_410159_split"]
 
 doBrick = True  #False
 doLocal = True 

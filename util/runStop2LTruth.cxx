@@ -120,9 +120,9 @@ int main( int argc, char* argv[] ) {
     SH::ScanDir().sampleDepth(sampleDepth).samplePattern(samplePattern).scan(sh, inputFilePath);
   } else if (submitToGrid) {
     SH::scanDQ2(sh, inputFilePath);
-  } else {
+  } else if (submitToCondor) {
     SH::readFileList(sh, "sample", inputFilePath);
-  }
+  } 
 
   // Set the name of the input TTree. It's always "CollectionTree"
   // for xAOD files.

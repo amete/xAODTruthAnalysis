@@ -301,174 +301,174 @@ EL::StatusCode Ewk2LTruthAnalysis :: execute ()
     else { susyID = 0; Info("execute()", "Unexpected production of pdgid %ii - %i", pdgid1, pdgid2); }
   }
 
-  // Loop over truth particles to find the sparticles
-  const xAOD::TruthParticle *x1m = NULL, *x1p = NULL;
-  for(const auto& truthPar : *truthParticles) {
-    if( truthPar->absPdgId() == 1000024 ) {
-      if( truthPar->nChildren()!=2 ) continue;
-      //Info("execute()"," Found truth chargino in event %i with pdgId %i and mass %.2e and pt %.2e and %i children", m_eventCounter, truthPar->pdgId(), truthPar->m(), truthPar->pt(), truthPar->nChildren());
-      if(saveHists) {
-        h_hists1D.at(m_nameToIndex["mx1"])->Fill(truthPar->m()*MEVtoGEV);
-      }
-      if(truthPar->pdgId() > 0) { x1p = truthPar; }
-      else                      { x1m = truthPar; }
-    }
-    if( truthPar->absPdgId() == 1000022 ) {
-      if( truthPar->nChildren()!=0 ) continue;
-      //Info("execute()"," Found truth neutralino in event %i with pdgId %i and mass %.2e and pt %.2e and %i children", m_eventCounter, truthPar->pdgId(), truthPar->m(), truthPar->pt(), truthPar->nChildren());
-      if(saveHists) {
-        h_hists1D.at(m_nameToIndex["mn1"])->Fill(truthPar->m()*MEVtoGEV);
-      }
-    }
-  }
-
-  // Loop over truth particles and store electrons and muons
-  std::vector<const xAOD::TruthParticle*> *electrons = new std::vector<const xAOD::TruthParticle*>();
-  std::vector<const xAOD::TruthParticle*> *muons = new std::vector<const xAOD::TruthParticle*>();
-
-  for(const auto& truthEl : *truthElectrons) {
-    if( truthEl->absPdgId() != 11    ) continue; // only electrons
-    if( truthEl->status() != 1       ) continue; // only final state objects
-    if( truthEl->pt()*MEVtoGEV < 10. ) continue; // pT > 5 GeV 
-    if( fabs(truthEl->eta()) > 2.5   ) continue; // |eta| < 2.8 
-   
-    electrons->push_back(truthEl); // store if passed all
-  } // end loop over truth electrons
-
-  for(const auto& truthMu : *truthMuons) {
-    if( truthMu->absPdgId() != 13    ) continue; // only muons
-    if( truthMu->status() != 1       ) continue; // only final state objects
-    if( truthMu->pt()*MEVtoGEV < 10. ) continue; // pT > 5 GeV 
-    if( fabs(truthMu->eta()) > 2.5   ) continue; // |eta| < 2.8 
-   
-    muons->push_back(truthMu); // store if passed all
-  } // end loop over truth muons
-
-  // Sort by Pt
-  std::sort(electrons->begin(),electrons->end(),SortByPt());
-  std::sort(muons->begin(),muons->end(),SortByPt());
-
-  // Retrieve the truth jets
-  const xAOD::JetContainer* truthJets = 0;
-  EL_RETURN_CHECK("execute()",event->retrieve( truthJets, "AntiKt4TruthJets"));
-
-  std::vector<const xAOD::Jet*> *jets = new std::vector<const xAOD::Jet*>();
-
-  for(const auto& truthJet : *truthJets) {
-    if( truthJet->pt()*MEVtoGEV < 20. ) continue; // pT > 20 GeV 
-    if( fabs(truthJet->eta()) > 4.5   ) continue; // |eta| < 4.5
-    jets->push_back(truthJet);
-  } // end loop over truth jets
-
-  // Sort by Pt
-  std::sort(jets->begin(),jets->end(),SortByPt());
-
-  // Overlap removal
-  // Remove jets from electrons
-  PhysicsTools::l_j_overlap( *electrons, *jets , 0.20, true );
-  // Remove electrons from jets
-  PhysicsTools::l_j_overlap( *electrons, *jets , 0.40, false);
-  // Remove muons from jets
-  PhysicsTools::l_j_overlap( *muons    , *jets , 0.40, false);
-
-  // Combine electrons and muons into leptons
-  std::vector<const xAOD::TruthParticle*> *leptons = new std::vector<const xAOD::TruthParticle*>();
-
-  for(const auto& truthEl : *electrons) { leptons->push_back(truthEl); }
-  for(const auto& truthMu : *muons)     { leptons->push_back(truthMu); }
-
-  // Sort by Pt
-  std::sort(leptons->begin(),leptons->end(),SortByPt());
-
-  // Retrieve the truth met
-  const xAOD::MissingETContainer* missingET = 0;
-  EL_RETURN_CHECK("execute()",event->retrieve( missingET, "MET_Truth"));
-
-  // Only ==2 lepton events and OS
-  unsigned int nLep = leptons->size();
-  if(saveHists) {
-    h_hists1D.at(m_nameToIndex["nLep"])->Fill(nLep);
-  }
-  if(nLep < 2) return EL::StatusCode::SUCCESS;
-  //if((leptons->at(0)->pdgId()*leptons->at(1)->pdgId()) > 0) return EL::StatusCode::SUCCESS;
-
-  // Build objects and fill histograms
-  TLorentzVector lep0 = leptons->at(0)->p4();
-  TLorentzVector lep1 = leptons->at(1)->p4();
-  TLorentzVector met;
-  met.SetPxPyPzE((*missingET)["NonInt"]->mpx(),
-                 (*missingET)["NonInt"]->mpy(),
-                 0.,
-                 (*missingET)["NonInt"]->met());
-
-  // Basic variables
-  bool isSF     = (leptons->at(0)->absPdgId() == leptons->at(1)->absPdgId()) ? true:false;
-  bool isDF     = !isSF;
-  bool isOS     = (leptons->at(0)->pdgId() * leptons->at(1)->pdgId() < 0) ? true:false;
-  bool isSS     = !isOS;
-  double mll    = (lep0+lep1).M();
-  double pTll   = (lep0+lep1).Pt();
-  double dphill = lep0.DeltaPhi(lep1); 
-  double pbll   = (lep0+lep1+met).Pt();
-  double dphi_met_pbll = met.DeltaPhi(lep0+lep1+met);
-
-  if(saveHists) {
-    h_hists1D.at(m_nameToIndex["lep0Pt"]       )->Fill(lep0.Pt()*MEVtoGEV);
-    h_hists1D.at(m_nameToIndex["lep0Eta"]      )->Fill(lep0.Eta());
-    h_hists1D.at(m_nameToIndex["lep0Phi"]      )->Fill(lep0.Phi());
-    h_hists1D.at(m_nameToIndex["lep1Pt"]       )->Fill(lep1.Pt()*MEVtoGEV);
-    h_hists1D.at(m_nameToIndex["lep1Eta"]      )->Fill(lep1.Eta());
-    h_hists1D.at(m_nameToIndex["lep1Phi"]      )->Fill(lep1.Phi());
-    h_hists1D.at(m_nameToIndex["met"]          )->Fill(met.Pt()*MEVtoGEV);
-    h_hists1D.at(m_nameToIndex["mll"]          )->Fill((lep0+lep1).M()*MEVtoGEV);
-    h_hists1D.at(m_nameToIndex["pTll"]         )->Fill((lep0+lep1).Pt()*MEVtoGEV);
-    h_hists1D.at(m_nameToIndex["deltaRll"]     )->Fill(lep0.DeltaR(lep1));
-    h_hists1D.at(m_nameToIndex["deltaPhill"]   )->Fill(lep0.DeltaPhi(lep1));
-    h_hists1D.at(m_nameToIndex["deltaPhil0met"])->Fill(lep0.DeltaPhi(met));
-    h_hists1D.at(m_nameToIndex["deltaPhil1met"])->Fill(lep1.DeltaPhi(met));
-
-    // Compute and fill x1x1 variables
-    if( x1p != NULL && x1m != NULL) {
-      h_hists1D.at(m_nameToIndex["x1x1Pt"]      )->Fill((x1p->p4()+x1m->p4()).Pt()*MEVtoGEV);
-      h_hists1D.at(m_nameToIndex["deltaRx1x1"]  )->Fill(x1p->p4().DeltaR(x1m->p4()));
-      h_hists1D.at(m_nameToIndex["deltaPhix1x1"])->Fill(x1p->p4().DeltaPhi(x1m->p4()));
-    }
-  }
-
-  // Compute and fill mT2 
-  ComputeMT2 mycalc = ComputeMT2(lep0,lep1,met,0.,0.); // masses 0. 0.
-  double mT2 = mycalc.Compute();
-  if(saveHists) {
-    h_hists1D.at(m_nameToIndex["mT2"])->Fill(mT2*MEVtoGEV);
-  }
-
-  // Compute and fill super-razor
-  double r2 = 0., dPhill_vBETA_T = 0., mDeltaR = 0.;
-  r2 = met.Pt()/(met.Pt()+lep0.Pt()+lep1.Pt());
-  PhysicsTools::superRazor(lep0,lep1,met,dPhill_vBETA_T,mDeltaR);
-
-  if(saveHists) {
-    h_hists1D.at(m_nameToIndex["r2"])->Fill(r2);
-    h_hists1D.at(m_nameToIndex["dPhill_vBETA_T"])->Fill(dPhill_vBETA_T);
-    h_hists1D.at(m_nameToIndex["mDeltaR"])->Fill(mDeltaR*MEVtoGEV);
-  }
-
-  // Fill jet variables
-  unsigned int nJet = jets->size();
-  if(saveHists) {
-    h_hists1D.at(m_nameToIndex["nJet"])->Fill(nJet);
-
-    if( nJet > 0) { 
-      h_hists1D.at(m_nameToIndex["jet0Pt"] )->Fill(jets->at(0)->p4().Pt()*MEVtoGEV);
-      h_hists1D.at(m_nameToIndex["jet0Eta"])->Fill(jets->at(0)->p4().Eta());
-      h_hists1D.at(m_nameToIndex["jet0Phi"])->Fill(jets->at(0)->p4().Phi());
-    }
-    if( nJet > 1) {
-      h_hists1D.at(m_nameToIndex["jet1Pt"] )->Fill(jets->at(1)->p4().Pt()*MEVtoGEV);
-      h_hists1D.at(m_nameToIndex["jet1Eta"])->Fill(jets->at(1)->p4().Eta());
-      h_hists1D.at(m_nameToIndex["jet1Phi"])->Fill(jets->at(1)->p4().Phi());
-    }
-  }
+//  // Loop over truth particles to find the sparticles
+//  const xAOD::TruthParticle *x1m = NULL, *x1p = NULL;
+//  for(const auto& truthPar : *truthParticles) {
+//    if( truthPar->absPdgId() == 1000024 ) {
+//      if( truthPar->nChildren()!=2 ) continue;
+//      //Info("execute()"," Found truth chargino in event %i with pdgId %i and mass %.2e and pt %.2e and %i children", m_eventCounter, truthPar->pdgId(), truthPar->m(), truthPar->pt(), truthPar->nChildren());
+//      if(saveHists) {
+//        h_hists1D.at(m_nameToIndex["mx1"])->Fill(truthPar->m()*MEVtoGEV);
+//      }
+//      if(truthPar->pdgId() > 0) { x1p = truthPar; }
+//      else                      { x1m = truthPar; }
+//    }
+//    if( truthPar->absPdgId() == 1000022 ) {
+//      if( truthPar->nChildren()!=0 ) continue;
+//      //Info("execute()"," Found truth neutralino in event %i with pdgId %i and mass %.2e and pt %.2e and %i children", m_eventCounter, truthPar->pdgId(), truthPar->m(), truthPar->pt(), truthPar->nChildren());
+//      if(saveHists) {
+//        h_hists1D.at(m_nameToIndex["mn1"])->Fill(truthPar->m()*MEVtoGEV);
+//      }
+//    }
+//  }
+//
+//  // Loop over truth particles and store electrons and muons
+//  std::vector<const xAOD::TruthParticle*> *electrons = new std::vector<const xAOD::TruthParticle*>();
+//  std::vector<const xAOD::TruthParticle*> *muons = new std::vector<const xAOD::TruthParticle*>();
+//
+//  for(const auto& truthEl : *truthElectrons) {
+//    if( truthEl->absPdgId() != 11    ) continue; // only electrons
+//    if( truthEl->status() != 1       ) continue; // only final state objects
+//    if( truthEl->pt()*MEVtoGEV < 10. ) continue; // pT > 5 GeV 
+//    if( fabs(truthEl->eta()) > 2.5   ) continue; // |eta| < 2.8 
+//   
+//    electrons->push_back(truthEl); // store if passed all
+//  } // end loop over truth electrons
+//
+//  for(const auto& truthMu : *truthMuons) {
+//    if( truthMu->absPdgId() != 13    ) continue; // only muons
+//    if( truthMu->status() != 1       ) continue; // only final state objects
+//    if( truthMu->pt()*MEVtoGEV < 10. ) continue; // pT > 5 GeV 
+//    if( fabs(truthMu->eta()) > 2.5   ) continue; // |eta| < 2.8 
+//   
+//    muons->push_back(truthMu); // store if passed all
+//  } // end loop over truth muons
+//
+//  // Sort by Pt
+//  std::sort(electrons->begin(),electrons->end(),SortByPt());
+//  std::sort(muons->begin(),muons->end(),SortByPt());
+//
+//  // Retrieve the truth jets
+//  const xAOD::JetContainer* truthJets = 0;
+//  EL_RETURN_CHECK("execute()",event->retrieve( truthJets, "AntiKt4TruthJets"));
+//
+//  std::vector<const xAOD::Jet*> *jets = new std::vector<const xAOD::Jet*>();
+//
+//  for(const auto& truthJet : *truthJets) {
+//    if( truthJet->pt()*MEVtoGEV < 20. ) continue; // pT > 20 GeV 
+//    if( fabs(truthJet->eta()) > 4.5   ) continue; // |eta| < 4.5
+//    jets->push_back(truthJet);
+//  } // end loop over truth jets
+//
+//  // Sort by Pt
+//  std::sort(jets->begin(),jets->end(),SortByPt());
+//
+//  // Overlap removal
+//  // Remove jets from electrons
+//  PhysicsTools::l_j_overlap( *electrons, *jets , 0.20, true );
+//  // Remove electrons from jets
+//  PhysicsTools::l_j_overlap( *electrons, *jets , 0.40, false);
+//  // Remove muons from jets
+//  PhysicsTools::l_j_overlap( *muons    , *jets , 0.40, false);
+//
+//  // Combine electrons and muons into leptons
+//  std::vector<const xAOD::TruthParticle*> *leptons = new std::vector<const xAOD::TruthParticle*>();
+//
+//  for(const auto& truthEl : *electrons) { leptons->push_back(truthEl); }
+//  for(const auto& truthMu : *muons)     { leptons->push_back(truthMu); }
+//
+//  // Sort by Pt
+//  std::sort(leptons->begin(),leptons->end(),SortByPt());
+//
+//  // Retrieve the truth met
+//  const xAOD::MissingETContainer* missingET = 0;
+//  EL_RETURN_CHECK("execute()",event->retrieve( missingET, "MET_Truth"));
+//
+//  // Only ==2 lepton events and OS
+//  unsigned int nLep = leptons->size();
+//  if(saveHists) {
+//    h_hists1D.at(m_nameToIndex["nLep"])->Fill(nLep);
+//  }
+//  if(nLep < 2) return EL::StatusCode::SUCCESS;
+//  //if((leptons->at(0)->pdgId()*leptons->at(1)->pdgId()) > 0) return EL::StatusCode::SUCCESS;
+//
+//  // Build objects and fill histograms
+//  TLorentzVector lep0 = leptons->at(0)->p4();
+//  TLorentzVector lep1 = leptons->at(1)->p4();
+//  TLorentzVector met;
+//  met.SetPxPyPzE((*missingET)["NonInt"]->mpx(),
+//                 (*missingET)["NonInt"]->mpy(),
+//                 0.,
+//                 (*missingET)["NonInt"]->met());
+//
+//  // Basic variables
+//  bool isSF     = (leptons->at(0)->absPdgId() == leptons->at(1)->absPdgId()) ? true:false;
+//  bool isDF     = !isSF;
+//  bool isOS     = (leptons->at(0)->pdgId() * leptons->at(1)->pdgId() < 0) ? true:false;
+//  bool isSS     = !isOS;
+//  double mll    = (lep0+lep1).M();
+//  double pTll   = (lep0+lep1).Pt();
+//  double dphill = lep0.DeltaPhi(lep1); 
+//  double pbll   = (lep0+lep1+met).Pt();
+//  double dphi_met_pbll = met.DeltaPhi(lep0+lep1+met);
+//
+//  if(saveHists) {
+//    h_hists1D.at(m_nameToIndex["lep0Pt"]       )->Fill(lep0.Pt()*MEVtoGEV);
+//    h_hists1D.at(m_nameToIndex["lep0Eta"]      )->Fill(lep0.Eta());
+//    h_hists1D.at(m_nameToIndex["lep0Phi"]      )->Fill(lep0.Phi());
+//    h_hists1D.at(m_nameToIndex["lep1Pt"]       )->Fill(lep1.Pt()*MEVtoGEV);
+//    h_hists1D.at(m_nameToIndex["lep1Eta"]      )->Fill(lep1.Eta());
+//    h_hists1D.at(m_nameToIndex["lep1Phi"]      )->Fill(lep1.Phi());
+//    h_hists1D.at(m_nameToIndex["met"]          )->Fill(met.Pt()*MEVtoGEV);
+//    h_hists1D.at(m_nameToIndex["mll"]          )->Fill((lep0+lep1).M()*MEVtoGEV);
+//    h_hists1D.at(m_nameToIndex["pTll"]         )->Fill((lep0+lep1).Pt()*MEVtoGEV);
+//    h_hists1D.at(m_nameToIndex["deltaRll"]     )->Fill(lep0.DeltaR(lep1));
+//    h_hists1D.at(m_nameToIndex["deltaPhill"]   )->Fill(lep0.DeltaPhi(lep1));
+//    h_hists1D.at(m_nameToIndex["deltaPhil0met"])->Fill(lep0.DeltaPhi(met));
+//    h_hists1D.at(m_nameToIndex["deltaPhil1met"])->Fill(lep1.DeltaPhi(met));
+//
+//    // Compute and fill x1x1 variables
+//    if( x1p != NULL && x1m != NULL) {
+//      h_hists1D.at(m_nameToIndex["x1x1Pt"]      )->Fill((x1p->p4()+x1m->p4()).Pt()*MEVtoGEV);
+//      h_hists1D.at(m_nameToIndex["deltaRx1x1"]  )->Fill(x1p->p4().DeltaR(x1m->p4()));
+//      h_hists1D.at(m_nameToIndex["deltaPhix1x1"])->Fill(x1p->p4().DeltaPhi(x1m->p4()));
+//    }
+//  }
+//
+//  // Compute and fill mT2 
+//  ComputeMT2 mycalc = ComputeMT2(lep0,lep1,met,0.,0.); // masses 0. 0.
+//  double mT2 = mycalc.Compute();
+//  if(saveHists) {
+//    h_hists1D.at(m_nameToIndex["mT2"])->Fill(mT2*MEVtoGEV);
+//  }
+//
+//  // Compute and fill super-razor
+//  double r2 = 0., dPhill_vBETA_T = 0., mDeltaR = 0.;
+//  r2 = met.Pt()/(met.Pt()+lep0.Pt()+lep1.Pt());
+//  PhysicsTools::superRazor(lep0,lep1,met,dPhill_vBETA_T,mDeltaR);
+//
+//  if(saveHists) {
+//    h_hists1D.at(m_nameToIndex["r2"])->Fill(r2);
+//    h_hists1D.at(m_nameToIndex["dPhill_vBETA_T"])->Fill(dPhill_vBETA_T);
+//    h_hists1D.at(m_nameToIndex["mDeltaR"])->Fill(mDeltaR*MEVtoGEV);
+//  }
+//
+//  // Fill jet variables
+//  unsigned int nJet = jets->size();
+//  if(saveHists) {
+//    h_hists1D.at(m_nameToIndex["nJet"])->Fill(nJet);
+//
+//    if( nJet > 0) { 
+//      h_hists1D.at(m_nameToIndex["jet0Pt"] )->Fill(jets->at(0)->p4().Pt()*MEVtoGEV);
+//      h_hists1D.at(m_nameToIndex["jet0Eta"])->Fill(jets->at(0)->p4().Eta());
+//      h_hists1D.at(m_nameToIndex["jet0Phi"])->Fill(jets->at(0)->p4().Phi());
+//    }
+//    if( nJet > 1) {
+//      h_hists1D.at(m_nameToIndex["jet1Pt"] )->Fill(jets->at(1)->p4().Pt()*MEVtoGEV);
+//      h_hists1D.at(m_nameToIndex["jet1Eta"])->Fill(jets->at(1)->p4().Eta());
+//      h_hists1D.at(m_nameToIndex["jet1Phi"])->Fill(jets->at(1)->p4().Phi());
+//    }
+//  }
 
   // Fill Tree
   if(saveTree) {
@@ -477,63 +477,63 @@ EL::StatusCode Ewk2LTruthAnalysis :: execute ()
     m_br_eventWeight    = eventInfo->mcEventWeight();
     h_cutflow_weighted->Fill(0.,m_br_eventWeight);
     m_br_mcEventWeights = eventInfo->mcEventWeights();
-    // Leptons
-    for(const auto& ipar : *leptons) {
-      TLorentzVector ipar_tlv = ipar->p4(); 
-      m_br_lepton_pt.push_back(ipar_tlv.Pt()*MEVtoGEV);
-      m_br_lepton_eta.push_back(ipar_tlv.Eta());
-      m_br_lepton_phi.push_back(ipar_tlv.Phi());
-      m_br_lepton_m.push_back(ipar_tlv.M()*MEVtoGEV);
-      m_br_lepton_flav.push_back(ipar->pdgId());
-      m_br_lepton_type.push_back(ipar->auxdata< unsigned int >("classifierParticleType"));
-      m_br_lepton_origin.push_back(ipar->auxdata< unsigned int >("classifierParticleOrigin"));
-      /////////////////////////////////////////
-      // Home cooked classification 
-      // TRUTH1 doesn't have vertices or mothers for leptons in the TruthElectron/TruthMuon containers!!!
-      const xAOD::TruthVertex* partOriVert = ipar->hasProdVtx() ? ipar->prodVtx():0;
-      const xAOD::TruthParticle* mother = nullptr;
-      if( partOriVert!=0 ) {
-        for (unsigned int ipIn=0; ipIn<partOriVert->nIncomingParticles(); ++ipIn) {
-          if(!(partOriVert->incomingParticle(ipIn))) continue;
-          mother = partOriVert->incomingParticle(ipIn);
-        }
-      }
-      m_br_lepton_mother.push_back(mother!=nullptr ? mother->pdgId() : 0);
-      m_br_lepton_mother_mass.push_back(mother!=nullptr ? mother->p4().M()*MEVtoGEV : 0);
-      /////////////////////////////////////////
-    }
-    // Jets
-    for(const auto& ipar : *jets) {
-      TLorentzVector ipar_tlv = ipar->p4(); 
-      m_br_jet_pt.push_back(ipar_tlv.Pt()*MEVtoGEV);
-      m_br_jet_eta.push_back(ipar_tlv.Eta());
-      m_br_jet_phi.push_back(ipar_tlv.Phi());
-      m_br_jet_m.push_back(ipar_tlv.M()*MEVtoGEV);
-      m_br_jet_flav.push_back(ipar->auxdata<int>("PartonTruthLabelID"));
-      if(ipar->auxdata<int>("PartonTruthLabelID")==5) {
-        m_br_bjet_pt.push_back(ipar_tlv.Pt()*MEVtoGEV);
-      } else {
-        m_br_nonbjet_pt.push_back(ipar_tlv.Pt()*MEVtoGEV);
-      }
-    }
-    // Event variables
+//    // Leptons
+//    for(const auto& ipar : *leptons) {
+//      TLorentzVector ipar_tlv = ipar->p4(); 
+//      m_br_lepton_pt.push_back(ipar_tlv.Pt()*MEVtoGEV);
+//      m_br_lepton_eta.push_back(ipar_tlv.Eta());
+//      m_br_lepton_phi.push_back(ipar_tlv.Phi());
+//      m_br_lepton_m.push_back(ipar_tlv.M()*MEVtoGEV);
+//      m_br_lepton_flav.push_back(ipar->pdgId());
+//      m_br_lepton_type.push_back(ipar->auxdata< unsigned int >("classifierParticleType"));
+//      m_br_lepton_origin.push_back(ipar->auxdata< unsigned int >("classifierParticleOrigin"));
+//      /////////////////////////////////////////
+//      // Home cooked classification 
+//      // TRUTH1 doesn't have vertices or mothers for leptons in the TruthElectron/TruthMuon containers!!!
+//      const xAOD::TruthVertex* partOriVert = ipar->hasProdVtx() ? ipar->prodVtx():0;
+//      const xAOD::TruthParticle* mother = nullptr;
+//      if( partOriVert!=0 ) {
+//        for (unsigned int ipIn=0; ipIn<partOriVert->nIncomingParticles(); ++ipIn) {
+//          if(!(partOriVert->incomingParticle(ipIn))) continue;
+//          mother = partOriVert->incomingParticle(ipIn);
+//        }
+//      }
+//      m_br_lepton_mother.push_back(mother!=nullptr ? mother->pdgId() : 0);
+//      m_br_lepton_mother_mass.push_back(mother!=nullptr ? mother->p4().M()*MEVtoGEV : 0);
+//      /////////////////////////////////////////
+//    }
+//    // Jets
+//    for(const auto& ipar : *jets) {
+//      TLorentzVector ipar_tlv = ipar->p4(); 
+//      m_br_jet_pt.push_back(ipar_tlv.Pt()*MEVtoGEV);
+//      m_br_jet_eta.push_back(ipar_tlv.Eta());
+//      m_br_jet_phi.push_back(ipar_tlv.Phi());
+//      m_br_jet_m.push_back(ipar_tlv.M()*MEVtoGEV);
+//      m_br_jet_flav.push_back(ipar->auxdata<int>("PartonTruthLabelID"));
+//      if(ipar->auxdata<int>("PartonTruthLabelID")==5) {
+//        m_br_bjet_pt.push_back(ipar_tlv.Pt()*MEVtoGEV);
+//      } else {
+//        m_br_nonbjet_pt.push_back(ipar_tlv.Pt()*MEVtoGEV);
+//      }
+//    }
+//    // Event variables
     m_br_susyID        = susyID; 
-    m_br_isSF          = isSF;
-    m_br_isDF          = isDF;
-    m_br_isSS          = isSS;
-    m_br_isOS          = isOS;
-    m_br_isNOHISR      = true;
-    if(m_br_nonbjet_pt.size()>0) {
-      if(m_br_nonbjet_pt.at(0) > 200. || m_br_nonbjet_pt.at(0) < 50.) m_br_isNOHISR = false;
-    } 
-    m_br_mT2ll         = mT2*MEVtoGEV;
-    m_br_mll           = mll*MEVtoGEV; 
-    m_br_ptll          = pTll*MEVtoGEV;
-    m_br_dphill        = dphill;
-    m_br_pbll          = pbll*MEVtoGEV; 
-    m_br_met_et        = met.Pt()*MEVtoGEV;
-    m_br_met_phi       = met.Phi();
-    m_br_dphi_met_pbll = dphi_met_pbll; 
+//    m_br_isSF          = isSF;
+//    m_br_isDF          = isDF;
+//    m_br_isSS          = isSS;
+//    m_br_isOS          = isOS;
+//    m_br_isNOHISR      = true;
+//    if(m_br_nonbjet_pt.size()>0) {
+//      if(m_br_nonbjet_pt.at(0) > 200. || m_br_nonbjet_pt.at(0) < 50.) m_br_isNOHISR = false;
+//    } 
+//    m_br_mT2ll         = mT2*MEVtoGEV;
+//    m_br_mll           = mll*MEVtoGEV; 
+//    m_br_ptll          = pTll*MEVtoGEV;
+//    m_br_dphill        = dphill;
+//    m_br_pbll          = pbll*MEVtoGEV; 
+//    m_br_met_et        = met.Pt()*MEVtoGEV;
+//    m_br_met_phi       = met.Phi();
+//    m_br_dphi_met_pbll = dphi_met_pbll; 
     outputTree->Fill();
   }
 

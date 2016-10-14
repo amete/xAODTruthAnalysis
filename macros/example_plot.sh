@@ -1,17 +1,17 @@
 #!/bin/bash
 
-var="bjet_n"
-var="${var},c_bjet_n"
-var="${var},mDRll"
-var="${var},mll"
-var="${var},RPT"
-var="${var},gamInvRp1"
-var="${var},DPB_vSS"
-var="${var},cosTheta_b"
-
-### ST2L 3-body
-python make_plots.py -i "Sherpa_lvlv,Sherpa_lvlv_fac4,Sherpa_lvlv_fac025,Sherpa_lvlv_renorm4,Sherpa_lvlv_renorm025,Sherpa_lvlv_qsf4,Sherpa_lvlv_qsf025" -v "${var}" -r "ST2L_incVV_SF,ST2L_incVV_DF" -f "eps" -l 10000 -b -a -L;
-python make_plots.py -i "Powheg_ttbar,Powheg_ttbar_radHi,Powheg_ttbar_radLo,PowhegHpp_ttbar,aMCatNLO_ttbar,Sherpa_ttbar_410021" -v "${var}" -r "ST2L_incTT_ALL" -f "eps" -l 10000 -b -a -L;
+#var="bjet_n"
+##var="${var},c_bjet_n"
+#var="${var},mDRll"
+#var="${var},mll"
+#var="${var},RPT"
+#var="${var},gamInvRp1"
+#var="${var},DPB_vSS"
+#var="${var},cosTheta_b"
+#
+#### ST2L 3-body
+#python make_plots.py -i "Sherpa_lvlv,Sherpa_lvlv_fac4,Sherpa_lvlv_fac025,Sherpa_lvlv_renorm4,Sherpa_lvlv_renorm025,Sherpa_lvlv_qsf4,Sherpa_lvlv_qsf025,Sherpa_lvlv_ckkw30,Sherpa_lvlv_ckkw15" -v "${var}" -r "ST2L_incVV_SF,ST2L_incVV_DF" -f "eps" -l 10000 -b -a -L;
+##python make_plots.py -i "Powheg_ttbar,Powheg_ttbar_radHi,Powheg_ttbar_radLo,PowhegHpp_ttbar,aMCatNLO_ttbar,aMCatNLOPy8_ttbar" -v "${var}" -r "ST2L_incTT_ALL" -f "eps" -l 10000 -b -a -L;
 
 #var="lepton_n"
 #var="${var},isDF"
@@ -67,26 +67,37 @@ python make_plots.py -i "Powheg_ttbar,Powheg_ttbar_radHi,Powheg_ttbar_radLo,Powh
 #var="truth_wbmass"
 #var="${var},TMath::Cos(truth_thetal)"
 
-#var2="truth_ststpt"
-#var2="${var2},truth_ststphi"
-#var2="${var2},truth_n1n1pt"
-#var2="${var2},truth_n1n1phi"
-#var2="${var2},truth_wbmass"
-#var2="${var2},met_et"
-#var2="${var2},mT2ll"
-#var2="${var2},nonbjet_n"
-#var2="${var2},nonbjet_pt[0]"
-#var2="${var2},bjet_n"
-#var2="${var2},bjet_pt[0]"
-#var2="${var2},lepton_pt[0]"
-#var2="${var2},truth_wbmass"
-#var2="${var2},TMath::Cos(truth_thetal)"
+var="truth_wbmass"
+var="${var},truth_wmass"
+var="${var},TMath::Cos(truth_thetal)"
+var2="truth_ststpt"
+var2="${var2},mDRll"
+var2="${var2},truth_ststphi"
+var2="${var2},truth_n1n1pt"
+var2="${var2},truth_n1n1phi"
+var2="${var2},met_et"
+var2="${var2},mll"
+var2="${var2},RPT"
+var2="${var2},gamInvRp1"
+var2="${var2},DPB_vSS"
+var2="${var2},cosTheta_b"
+var2="${var2},dphill"
+var2="${var2},ptll"
+var2="${var2},mT2ll"
+var2="${var2},nonbjet_n"
+var2="${var2},nonbjet_pt[0]"
+var2="${var2},bjet_n"
+var2="${var2},bjet_pt[0]"
+var2="${var2},lepton_pt[0]"
+var2="${var2},lepton_pt[1]"
 
 ### Sleptons
 #var="${var},susyID"
 #python make_plots.py -i "MadgraphSlep_100vs1" -v "${var}" -r "VR_SUSY_LEP" -f "eps" -l 1 -b;
 
 ### Stop Polarization
+python make_plots.py -i "MadgraphFM_350vs270,MadSpin_350vs270,Pythia_350vs270" -v "${var}" -r "ALL" -f "eps" -l 10000 -b -a; 
+python make_plots.py -i "MadgraphFM_350vs270,MadSpin_350vs270,Pythia_350vs270" -v "${var2}" -r "ALL" -f "eps" -l 10000 -b -a -L; 
 ##python make_plots.py -i "Herwigpp_300vs180,MadgraphF_300vs180,MadgraphR_300vs180,MadgraphM_300vs180,MadgraphL_300vs180,Madgraph_300vs180" -v "${var}" -r "VR_STOP2L_INC" -f "eps" -l 10000 -b -a; 
 ##python make_plots.py -i "Herwigpp_300vs180,MadgraphF_300vs180,MadgraphR_300vs180,MadgraphM_300vs180,MadgraphL_300vs180,Madgraph_300vs180" -v "${var2}" -r "VR_STOP2L_INC" -f "eps" -l 10000 -b -a -L; 
 #python make_plots.py -i "TakashiF_250vs125,TakashiL_250vs125,Takashi_250vs125" -v "${var}" -r "VR_STOP2L_INC" -f "eps" -l 10000 -b -a; 

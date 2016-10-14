@@ -10,12 +10,15 @@ def getROOTFileName(filename):
         "Sherpa_lvlv_renorm025": "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363075.root",
         "Sherpa_lvlv_qsf4"     : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363076.root",
         "Sherpa_lvlv_qsf025"   : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363077.root",
+        "Sherpa_lvlv_ckkw15"   : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363299.root",
+        "Sherpa_lvlv_ckkw30"   : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363300.root",
         "Powheg_WWlvlv"        : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_361600.root",
         "Powheg_ZZllvv"        : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_361604.root",
         "Powheg_ttbar"         : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410000.root",
         "Powheg_ttbar_radHi"   : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410001.root",
         "Powheg_ttbar_radLo"   : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410002.root",
         "aMCatNLO_ttbar"       : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410003.root",
+        "aMCatNLOPy8_ttbar"    : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410159.root",
         "PowhegHpp_ttbar"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410004.root",
         "Sherpa_ttbar_410021"  : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410021.root",
         "Sherpa_ttbar_410189"  : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410189.root",
@@ -49,6 +52,9 @@ def getROOTFileName(filename):
         "SerhanFR_250vs125"    : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_123461.MGPy8EG_A14N_TTright_bWN_250_125_2Lep18.root",
         #"MadgraphSlep_100vs1"  : "/gdata/atlas/amete/MC15_SleptonPairProduction/FLAT/DAOD_TRUTH1.MGPy8EG_A14N23LO_SlepSlep_direct_100p0_1p0_2L5_10k.pool.root",
         "MadgraphSlep_100vs1"  : "/data/uclhc/uci/user/amete/slepton_signal_flat/DAOD_TRUTH1.MGPy8EG_A14N23LO_SlepSlep_direct_100p0_1p0_2L5_10k.pool.root",
+        "MadgraphFM_350vs270" : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/FullME/data-myOutput/sample.root",
+        "MadSpin_350vs270"    : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/MadSpin/data-myOutput/user.amete.9502993.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        "Pythia_350vs270"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/Pythia/data-myOutput/user.amete.9506931.EXT0._000002.DAOD_TRUTH1.output.pool.root.root",
     }.get(filename,"")
 
 # Define cross-sections
@@ -61,12 +67,15 @@ def getCrossSection(filename):
         "Sherpa_lvlv_renorm025": 14.022*0.91,   # 363075
         "Sherpa_lvlv_qsf4"     : 14.022*0.91,   # 363076
         "Sherpa_lvlv_qsf025"   : 14.022*0.91,   # 363077
+        "Sherpa_lvlv_ckkw15"   : 14.022*0.91,   # 363299
+        "Sherpa_lvlv_ckkw30"   : 14.022*0.91,   # 363300
         "Powheg_WWlvlv"        : 10.631,        # 361600
         "Powheg_ZZllvv"        : 0.92498,       # 361604
         "Powheg_ttbar"         : 831.76*0.543,  # 410000 => 696.11  1.1949  0.543
         "Powheg_ttbar_radHi"   : 831.76*0.543,  # 410001 => 783.73  1.0613  0.543
         "Powheg_ttbar_radLo"   : 831.76*0.543,  # 410002 => 611.1   1.3611  0.543
         "aMCatNLO_ttbar"       : 831.76*0.543,  # 410003 => 694.59  1.1975  0.543
+        "aMCatNLOPy8_ttbar"    : 679.76*0.54393*1.2236,  # https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MC15TTbarSamplesPMG 8/7/2016 
         "PowhegHpp_ttbar"      : 831.76*0.543,  # 410004 => 696.32  1.1926  0.543 
         "Sherpa_ttbar_410021"  : 78.73*1.17,    # 410021 => 78.73   1.17    1. 
         "Sherpa_ttbar_410189"  : 76.333*1.1484, # 410021 => https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MC15TTbarSamplesPMG 
@@ -95,6 +104,9 @@ def getCrossSection(filename):
         "SerhanFL_250vs125"    : 1,  # Dummy
         "SerhanFR_250vs125"    : 1,  # Dummy
         "MadgraphSlep_100vs1"  : 1,  # Dummy
+        "MadgraphFM_350vs270"  : 1,  # Dummy
+        "MadSpin_350vs270"     : 1,  # Dummy
+        "Pythia_350vs270"      : 1,  # Dummy
     }.get(filename,"")
 
 # Define X titles
@@ -172,18 +184,30 @@ def getXtitle(variable):
         "truth_n1mass"    : "Mass of the neutralino [GeV]",
         "truth_n1mass[0]" : "Mass of the first neutralino [GeV]",
         "truth_n1mass[1]" : "Mass of the second neutralino [GeV]",
-        "truth_wbpt"      : "Pt of the W+b system [GeV]",
-        "truth_wbpt[0]"   : "Pt of the first W+b system [GeV]",
-        "truth_wbpt[1]"   : "Pt of the second W+b system [GeV]",
-        "truth_wbmass"    : "Mass of the W+b system [GeV]",
-        "truth_wbmass[0]" : "Mass of the first W+b system [GeV]",
-        "truth_wbmass[1]" : "Mass of the second W+b system [GeV]",
-        "truth_wpt"       : "Pt of the W [GeV]",
-        "truth_wpt[0]"    : "Pt of the first W [GeV]",
-        "truth_wpt[1]"    : "Pt of the second W [GeV]",
-        "truth_wmass"     : "Mass of the W [GeV]",
-        "truth_wmass[0]"  : "Mass of the first W [GeV]",
-        "truth_wmass[1]"  : "Mass of the second W [GeV]",
+        #"truth_wbpt"      : "Pt of the W+b system [GeV]",
+        #"truth_wbpt[0]"   : "Pt of the first W+b system [GeV]",
+        #"truth_wbpt[1]"   : "Pt of the second W+b system [GeV]",
+        #"truth_wbmass"    : "Mass of the W+b system [GeV]",
+        #"truth_wbmass[0]" : "Mass of the first W+b system [GeV]",
+        #"truth_wbmass[1]" : "Mass of the second W+b system [GeV]",
+        "truth_wbpt"      : "Pt of the l+#nu+b system [GeV]",
+        "truth_wbpt[0]"   : "Pt of the first l+#nu+b system [GeV]",
+        "truth_wbpt[1]"   : "Pt of the second l+#nu+b system [GeV]",
+        "truth_wbmass"    : "Mass of the l+#nu+b system [GeV]",
+        "truth_wbmass[0]" : "Mass of the first l+#nu+b system [GeV]",
+        "truth_wbmass[1]" : "Mass of the second l+#nu+b system [GeV]",
+        #"truth_wpt"       : "Pt of the W [GeV]",
+        #"truth_wpt[0]"    : "Pt of the first W [GeV]",
+        #"truth_wpt[1]"    : "Pt of the second W [GeV]",
+        #"truth_wmass"     : "Mass of the W [GeV]",
+        #"truth_wmass[0]"  : "Mass of the first W [GeV]",
+        #"truth_wmass[1]"  : "Mass of the second W [GeV]",
+        "truth_wpt"       : "Pt of the l+#nu [GeV]",
+        "truth_wpt[0]"    : "Pt of the first l+#nu [GeV]",
+        "truth_wpt[1]"    : "Pt of the second l+#nu [GeV]",
+        "truth_wmass"     : "Mass of the l+#nu [GeV]",
+        "truth_wmass[0]"  : "Mass of the first l+#nu [GeV]",
+        "truth_wmass[1]"  : "Mass of the second l+#nu [GeV]",
         "TMath::Cos(truth_thetal)"    : "cos#theta",
         "TMath::Cos(truth_thetal[0])" : "cos#theta of the first system",
         "TMath::Cos(truth_thetal[1])" : "cos#theta of the second system",
@@ -200,7 +224,7 @@ def getRegionTCut(region):
     commonSRCuts    = "(RPT>0.5&&gamInvRp1>0.8&&DPB_vSS>(0.85*TMath::Abs(cosTheta_b)+1.8))" 
     commonPreSRCuts = "(RPT>0.5&&gamInvRp1>0.8)" 
     return {
-        # Actual regions # These guys don't have the mll>20 GeV cut!!!
+        # Actual regions
         "ST2L_SRw_SF"       : "("  + isOSSF + "&&" + commonSRCuts   + "&&mDRll>95.&&"  + bVeto      + "&&" + zVeto + ")",
         "ST2L_SRw_DF"       : "("  + isOSDF + "&&" + commonSRCuts   + "&&mDRll>95.&&"  + bVeto      + ")",
         "ST2L_SRt_SF"       : "("  + isOSSF + "&&" + commonSRCuts   + "&&mDRll>110.&&" + bSelection + "&&" + zVeto + ")",
@@ -219,8 +243,8 @@ def getRegionTCut(region):
         "ST2L_incTT_SF"     : "("  + isOSSF + "&&mDRll>95.&&RPT>0.5&&gamInvRp1>0.8)",
         "ST2L_incTT_DF"     : "("  + isOSDF + "&&mDRll>95.&&RPT>0.5&&gamInvRp1>0.8)",
         "ST2L_incTT_ALL"    : "((" + isOSSF + "||" + isOSDF + ")&&mDRll>95.&&RPT>0.5&&gamInvRp1>0.8)",
-        "ST2L_incVV_SF"     : "("  + isOSSF + "&&" + zVeto  + "&&mDRll>95.&&gamInvRp1>0.8)", #&&RPT>0.5&&DPB_vSS>(0.85*TMath::Abs(cosTheta_b)+1.8))",
-        "ST2L_incVV_DF"     : "("  + isOSDF +                 "&&mDRll>95.&&gamInvRp1>0.8)", #&&RPT>0.5&&DPB_vSS>(0.85*TMath::Abs(cosTheta_b)+1.8))",
+        "ST2L_incVV_SF"     : "("  + isOSSF + "&&" + zVeto  + "&&mDRll>95.&&gamInvRp1>-99)", #&&RPT>0.5&&DPB_vSS>(0.85*TMath::Abs(cosTheta_b)+1.8))",
+        "ST2L_incVV_DF"     : "("  + isOSDF +                 "&&mDRll>95.&&gamInvRp1>-99)", #&&RPT>0.5&&DPB_vSS>(0.85*TMath::Abs(cosTheta_b)+1.8))",
         "ST2L_looseSRw_SF"  : "("  + isOSSF + "&&" + bVeto      + "&&" + zVeto + ")",
         "ST2L_looseSRw_DF"  : "("  + isOSDF + "&&" + bVeto      + ")",
         "ST2L_looseSRt_SF"  : "("  + isOSSF + "&&" + bSelection + "&&" + zVeto + ")",
@@ -268,12 +292,12 @@ def getBinInformation(variable):
         "lepton_phi"    : [70,-3.5,3.5],
         "jet_phi"       : [ 7,-3.5,3.5],
         "mT2ll"         : [ 20, 0, 200], #[[0,10,20,30,40,50,60,70,80,90,100,110,120,130,145,300]],
-        "ptll"          : [ 50, 0, 500], 
-        "mll"           : [ 8, 0, 400], #[[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,400,500,1000]],
+        "ptll"          : [ 40, 0, 400], 
+        "mll"           : [ 40, 0, 400], #[[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,400,500,1000]],
         "mDRll"         : [[0,10,20,30,40,50,60,70,80,95,110,200]],
         "RPT"           : [ 10, 0, 1],
-        "gamInvRp1"     : [ 5, 0, 1],
-        "cosTheta_b"    : [ 5, -1, 1],
+        "gamInvRp1"     : [ 10, 0, 1],
+        "cosTheta_b"    : [ 10, -1, 1],
         "DPB_vSS"       : [ 8, 0, 3.2],
         "isDF"          : [  2, 0, 2],
         "isSF"          : [  2, 0, 2],
@@ -301,9 +325,9 @@ def getBinInformation(variable):
         "truth_n1pt"    : [ 50, 0, 1000],
         "truth_n1mass"  : [20, 169.5, 189.5],
         "truth_wpt"     : [ 50,  0, 1000],
-        "truth_wmass"   : [ 40, 60, 100],
+        "truth_wmass"   : [ 50,  0, 100],
         "truth_wbpt"    : [ 50,  0, 1000],
-        "truth_wbmass"  : [ 75, 50, 200],
+        "truth_wbmass"  : [ 50, 0, 100],
         "TMath::Cos(truth_thetal)"  : [10, -1, 1], # Cos of thetal
     }.get(variable,[1,0.5,1.5]) # 1 is default if variable is not found
 
@@ -334,6 +358,7 @@ def setColors(files):
         elif ii == 5: colors[ii] = ROOT.kOrange+1 
         elif ii == 6: colors[ii] = ROOT.kYellow+1 
         elif ii == 7: colors[ii] = ROOT.kRed
+        elif ii == 8: colors[ii] = ROOT.kSpring+3
     return colors
 
 # Fill histograms
