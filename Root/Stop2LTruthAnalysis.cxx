@@ -691,33 +691,33 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
     h_hists1D.at(m_nameToIndex1D["nLep"])->Fill(nLep,eventWeight);
   }
 
-  // To check filter!!!!!
-  // To check filter!!!!!
-  // To check filter!!!!!
-  // To check filter!!!!!
-  if(saveHists) {
-    bool pass2L3    = nLep >= 2 ? true : false;
-    bool pass2L15   = false;
-    if(pass2L3) pass2L15 = leptons->at(0)->pt()*MEVtoGEV > 15. && leptons->at(1)->pt()*MEVtoGEV > 15.;
-    bool passMET100 = (*missingET)["NonInt"]->met()*MEVtoGEV > 100. ? true : false; 
-
-    if(pass2L15 && passMET100) { 
-        h_hists2D.at(m_nameToIndex2D["nLEPvsMET"])->Fill(1.,1.);
-    } else if (pass2L15 && !passMET100) {
-        h_hists2D.at(m_nameToIndex2D["nLEPvsMET"])->Fill(1.,0.);
-    } else if (pass2L3 && !pass2L15 && passMET100) {
-        h_hists2D.at(m_nameToIndex2D["nLEPvsMET"])->Fill(0.,1.);
-    } else if (pass2L3 && !pass2L15 && !passMET100) {
-        h_hists2D.at(m_nameToIndex2D["nLEPvsMET"])->Fill(0.,0.);
-    } else {
-        Info("execute()","Weird event...");
-    }
-  }
-  return EL::StatusCode::SUCCESS;
-  // To check filter!!!!!
-  // To check filter!!!!!
-  // To check filter!!!!!
-  // To check filter!!!!!
+////  // To check filter!!!!!
+////  // To check filter!!!!!
+////  // To check filter!!!!!
+////  // To check filter!!!!!
+////  if(saveHists) {
+////    bool pass2L3    = nLep >= 2 ? true : false;
+////    bool pass2L15   = false;
+////    if(pass2L3) pass2L15 = leptons->at(0)->pt()*MEVtoGEV > 15. && leptons->at(1)->pt()*MEVtoGEV > 15.;
+////    bool passMET100 = (*missingET)["NonInt"]->met()*MEVtoGEV > 100. ? true : false; 
+////
+////    if(pass2L15 && passMET100) { 
+////        h_hists2D.at(m_nameToIndex2D["nLEPvsMET"])->Fill(1.,1.);
+////    } else if (pass2L15 && !passMET100) {
+////        h_hists2D.at(m_nameToIndex2D["nLEPvsMET"])->Fill(1.,0.);
+////    } else if (pass2L3 && !pass2L15 && passMET100) {
+////        h_hists2D.at(m_nameToIndex2D["nLEPvsMET"])->Fill(0.,1.);
+////    } else if (pass2L3 && !pass2L15 && !passMET100) {
+////        h_hists2D.at(m_nameToIndex2D["nLEPvsMET"])->Fill(0.,0.);
+////    } else {
+////        Info("execute()","Weird event...");
+////    }
+////  }
+////  return EL::StatusCode::SUCCESS;
+////  // To check filter!!!!!
+////  // To check filter!!!!!
+////  // To check filter!!!!!
+////  // To check filter!!!!!
 
   // Only ==2 OS lepton events
   if(nLep != 2) return EL::StatusCode::SUCCESS;
