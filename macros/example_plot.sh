@@ -96,8 +96,10 @@ var2="${var2},lepton_pt[1]"
 #python make_plots.py -i "MadgraphSlep_100vs1" -v "${var}" -r "VR_SUSY_LEP" -f "eps" -l 1 -b;
 
 ### Stop Polarization
-python make_plots.py -i "MadgraphFM_350vs270,MadSpin_350vs270,Pythia_350vs270" -v "${var}" -r "ALL" -f "eps" -l 10000 -b -a; 
-python make_plots.py -i "MadgraphFM_350vs270,MadSpin_350vs270,Pythia_350vs270" -v "${var2}" -r "ALL" -f "eps" -l 10000 -b -a -L; 
+python make_plots.py -i "MadGraphFM_350vs230,MadSpinBW15_350vs230,MadSpinBFFN_350vs230" -v "${var}" -r "ALL" -f "eps" -l 10000 -b -a -L; 
+python make_plots.py -i "MadGraphFM_350vs230,MadSpinBW15_350vs230,MadSpinBFFN_350vs230" -v "${var2}" -r "ALL" -f "eps" -l 10000 -b -a -L; 
+#python make_plots.py -i "MadgraphFM_350vs270,MadSpin_350vs270,Marilea_350vs270,Pythia_350vs270" -v "${var}" -r "ALL" -f "eps" -l 10000 -b -a; 
+#python make_plots.py -i "MadgraphFM_350vs270,MadSpin_350vs270,Pythia_350vs270" -v "${var2}" -r "ALL" -f "eps" -l 10000 -b -a -L; 
 ##python make_plots.py -i "Herwigpp_300vs180,MadgraphF_300vs180,MadgraphR_300vs180,MadgraphM_300vs180,MadgraphL_300vs180,Madgraph_300vs180" -v "${var}" -r "VR_STOP2L_INC" -f "eps" -l 10000 -b -a; 
 ##python make_plots.py -i "Herwigpp_300vs180,MadgraphF_300vs180,MadgraphR_300vs180,MadgraphM_300vs180,MadgraphL_300vs180,Madgraph_300vs180" -v "${var2}" -r "VR_STOP2L_INC" -f "eps" -l 10000 -b -a -L; 
 #python make_plots.py -i "TakashiF_250vs125,TakashiL_250vs125,Takashi_250vs125" -v "${var}" -r "VR_STOP2L_INC" -f "eps" -l 10000 -b -a; 

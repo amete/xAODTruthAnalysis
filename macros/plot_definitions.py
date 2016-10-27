@@ -54,7 +54,13 @@ def getROOTFileName(filename):
         "MadgraphSlep_100vs1"  : "/data/uclhc/uci/user/amete/slepton_signal_flat/DAOD_TRUTH1.MGPy8EG_A14N23LO_SlepSlep_direct_100p0_1p0_2L5_10k.pool.root",
         "MadgraphFM_350vs270" : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/FullME/data-myOutput/sample.root",
         "MadSpin_350vs270"    : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/MadSpin/data-myOutput/user.amete.9502993.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        "Marilea_350vs270"    : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/Marilea/data-myOutput/DAOD_TRUTH1.TestJob_999999_350_270_MADSPIN_newrel.pool.root.root",
         "Pythia_350vs270"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/Pythia/data-myOutput/user.amete.9506931.EXT0._000002.DAOD_TRUTH1.output.pool.root.root",
+        "MadGraphFM_350vs230"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/FullME/data-myOutput/output.root",
+        "MadSpinBW15_350vs230"    : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW15/data-myOutput/user.amete.9683648.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        "MadSpinBW100_350vs230"   : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW100/data-myOutput/user.amete.9683651.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        "MadSpinBW1000_350vs230"  : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW1000/data-myOutput/user.amete.9683654.EXT0._000002.DAOD_TRUTH1.output.pool.root.root",
+        "MadSpinBFFN_350vs230"    : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBFFN/data-myOutput/user.amete.9733327.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
     }.get(filename,"")
 
 # Define cross-sections
@@ -106,7 +112,13 @@ def getCrossSection(filename):
         "MadgraphSlep_100vs1"  : 1,  # Dummy
         "MadgraphFM_350vs270"  : 1,  # Dummy
         "MadSpin_350vs270"     : 1,  # Dummy
+        "Marilea_350vs270"     : 1,  # Dummy
         "Pythia_350vs270"      : 1,  # Dummy
+        "MadGraphFM_350vs230"     : 1,  # Dummy 
+        "MadSpinBW15_350vs230"    : 1,  # Dummy 
+        "MadSpinBW100_350vs230"   : 1,  # Dummy 
+        "MadSpinBW1000_350vs230"  : 1,  # Dummy 
+        "MadSpinBFFN_350vs230"    : 1,  # Dummy 
     }.get(filename,"")
 
 # Define X titles
@@ -325,9 +337,9 @@ def getBinInformation(variable):
         "truth_n1pt"    : [ 50, 0, 1000],
         "truth_n1mass"  : [20, 169.5, 189.5],
         "truth_wpt"     : [ 50,  0, 1000],
-        "truth_wmass"   : [ 50,  0, 100],
+        "truth_wmass"   : [ 60,  0, 300],
         "truth_wbpt"    : [ 50,  0, 1000],
-        "truth_wbmass"  : [ 50, 0, 100],
+        "truth_wbmass"  : [ 60, 0, 300],
         "TMath::Cos(truth_thetal)"  : [10, -1, 1], # Cos of thetal
     }.get(variable,[1,0.5,1.5]) # 1 is default if variable is not found
 

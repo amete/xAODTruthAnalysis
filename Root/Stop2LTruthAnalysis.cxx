@@ -496,50 +496,54 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
        bquarks[0] == nullptr     || bquarks[1] == nullptr     
       ) return EL::StatusCode::SUCCESS;
 
-    //// Now find leptons from Ws
-    //selfDecay=false;
-    //wboson = wbosons[0];
-    //do{
-    //  for(unsigned int i=0; i<wboson->nChildren();i++) {
-    //    selfDecay=false;
-    //    const xAOD::TruthParticle* child = wboson->child(i);
-    //    if( child->pdgId()==wboson->pdgId() ){
-    //      wboson = child;
-    //      selfDecay = true;
-    //      break;
-    //    }
-    //    else if ( child->isChLepton() ) {
-    //      wlepton = child;
-    //      wleptons[0] = wlepton;
-    //    }
-    //    else if ( child->isNeutrino() ) {
-    //      wneutrino = child;
-    //      wneutrinos[0] = wneutrino;
-    //    }
-    //  }
-    //} while(selfDecay);
+    // Now find leptons from Ws
+    if(wbosons[0] != nullptr) {
+      selfDecay=false;
+      wboson = wbosons[0];
+      do{
+        for(unsigned int i=0; i<wboson->nChildren();i++) {
+          selfDecay=false;
+          const xAOD::TruthParticle* child = wboson->child(i);
+          if( child->pdgId()==wboson->pdgId() ){
+            wboson = child;
+            selfDecay = true;
+            break;
+          }
+          else if ( child->isChLepton() ) {
+            wlepton = child;
+            wleptons[0] = wlepton;
+          }
+          else if ( child->isNeutrino() ) {
+            wneutrino = child;
+            wneutrinos[0] = wneutrino;
+          }
+        }
+      } while(selfDecay);
+    }
 
-    //selfDecay=false;
-    //wboson = wbosons[1];
-    //do{
-    //  for(unsigned int i=0; i<wboson->nChildren();i++) {
-    //    selfDecay=false;
-    //    const xAOD::TruthParticle* child = wboson->child(i);
-    //    if( child->pdgId()==wboson->pdgId() ){
-    //      wboson = child;
-    //      selfDecay = true;
-    //      break;
-    //    }
-    //    else if ( child->isChLepton() ) {
-    //      wlepton = child;
-    //      wleptons[1] = wlepton;
-    //    }
-    //    else if ( child->isNeutrino() ) {
-    //      wneutrino = child;
-    //      wneutrinos[1] = wneutrino;
-    //    }
-    //  }
-    //} while(selfDecay);
+    if(wbosons[1] != nullptr) {
+      selfDecay=false;
+      wboson = wbosons[1];
+      do{
+        for(unsigned int i=0; i<wboson->nChildren();i++) {
+          selfDecay=false;
+          const xAOD::TruthParticle* child = wboson->child(i);
+          if( child->pdgId()==wboson->pdgId() ){
+            wboson = child;
+            selfDecay = true;
+            break;
+          }
+          else if ( child->isChLepton() ) {
+            wlepton = child;
+            wleptons[1] = wlepton;
+          }
+          else if ( child->isNeutrino() ) {
+            wneutrino = child;
+            wneutrinos[1] = wneutrino;
+          }
+        }
+      } while(selfDecay);
+    }
 
     // Make sure the leptons exist
     if(wleptons[0] == nullptr || wleptons[1] == nullptr || wneutrinos[0] == nullptr || wneutrinos[1] == nullptr) {
@@ -630,7 +634,7 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   for(const auto& truthEl : *truthElectrons) {
     if( truthEl->absPdgId() != 11    ) continue; // only electrons
     if( truthEl->status() != 1       ) continue; // only final state objects
-    if( truthEl->pt()*MEVtoGEV < 3. ) continue; // pT > 15 GeV
+    if( truthEl->pt()*MEVtoGEV < 15. ) continue; // pT > 15 GeV
     if( fabs(truthEl->eta()) > 2.8   ) continue; // |eta| < 2.5
 
     electrons->push_back(truthEl); // store if passed all
@@ -639,7 +643,7 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   for(const auto& truthMu : *truthMuons) {
     if( truthMu->absPdgId() != 13    ) continue; // only muons
     if( truthMu->status() != 1       ) continue; // only final state objects
-    if( truthMu->pt()*MEVtoGEV < 3. ) continue; // pT > 15 GeV
+    if( truthMu->pt()*MEVtoGEV < 15. ) continue; // pT > 15 GeV
     if( fabs(truthMu->eta()) > 2.8   ) continue; // |eta| < 2.5
    
     muons->push_back(truthMu); // store if passed all
