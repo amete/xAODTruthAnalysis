@@ -3,6 +3,9 @@ import ROOT,math,array
 # Define the input ROOT files
 def getROOTFileName(filename):
     return {
+        # Moriond Samples :: BEGIN
+        "Sherpa_221_llvv"         : "/tmp/amete/local_truth_analysis_test/test_1/data-myOutput/DAOD_TRUTH1.09451524._000030.pool.root.1.root",
+        # Moriond Samples :: END
         "Sherpa_lvlv"             : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_361068.root",
         "Sherpa_lvlv_fac4"        : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363072.root",
         "Sherpa_lvlv_fac025"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363073.root",
@@ -72,6 +75,9 @@ def getROOTFileName(filename):
 # Define cross-sections
 def getCrossSection(filename):
     return {
+        # Moriond Samples :: BEGIN
+        "Sherpa_221_llvv"        : 12.465,
+        # Moriond Samples :: END
         "Sherpa_lvlv"            : 14.022*0.91,   # 361068 https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MC15SystematicUncertainties#VV_Diboson_V_W_Z 24/11/15
         "Sherpa_lvlv_fac4"       : 14.022*0.91,   # 363072
         "Sherpa_lvlv_fac025"     : 14.022*0.91,   # 363073
@@ -364,10 +370,10 @@ def getROOTFiles(options):
     return files
 
 # Get sum of weights
-def getSumOfWeights(files):
+def getSumOfWeights(files,weight=1): # weight=1 is nominal weight
     sumw=[0 for x in range(len(files))]
     for ii,iiFile in enumerate(files):
-        sumw[ii] = iiFile.Get("CutflowWeighted").GetBinContent(1)
+        sumw[ii] = iiFile.Get("CutflowWeighted").GetBinContent(weight)
     return sumw
 
 # Set colors
@@ -386,14 +392,14 @@ def setColors(files):
     return colors
 
 # Fill histograms
-def fillHistograms(files,options):
+def fillHistograms(files,options,weight=1):
 
     inputFileList=options.inputname.split(",")
     variableList=options.varname.split(",") 
     regionList=options.regionname.split(",")
 
     # Read the sum of weights
-    sumw=getSumOfWeights(files) 
+    sumw=getSumOfWeights(files,weight) 
 
     histograms=[[[0 for x in range(len(variableList))] for x in range(len(regionList))] for x in range(len(inputFileList))]
 
@@ -433,14 +439,13 @@ def fillHistograms(files,options):
                 if(options.debug):
                     print("INFO :: Cross-section %.2f - Luminosity %.2f - Sumw %.2f"%(getCrossSection(inputFile),options.luminosity,sumw[ii]))
                 if "MadgraphM" in inputFile:
-                    selection=("(mcEventWeight*mcPolWeight_M*%f*%f/%f)*(%s)"%(getCrossSection(inputFile),options.luminosity,sumw[ii],cut))
+                    selection=("(mcEventWeights[%i]*mcPolWeight_M*%f*%f/%f)*(%s)"%(weight,getCrossSection(inputFile),options.luminosity,sumw[ii],cut))
                 elif "MadgraphR" in inputFile:
-                    selection=("(mcEventWeight*mcPolWeight_R*%f*%f/%f)*(%s)"%(getCrossSection(inputFile),options.luminosity,sumw[ii],cut))
+                    selection=("(mcEventWeights[%i]*mcPolWeight_R*%f*%f/%f)*(%s)"%(weight,getCrossSection(inputFile),options.luminosity,sumw[ii],cut))
                 elif ("MadgraphL" in inputFile) or ("TakashiL" in inputFile):
-                    selection=("(mcEventWeight*mcPolWeight_L*%f*%f/%f)*(%s)"%(getCrossSection(inputFile),options.luminosity,sumw[ii],cut))
+                    selection=("(mcEventWeights[%i]*mcPolWeight_L*%f*%f/%f)*(%s)"%(weight,getCrossSection(inputFile),options.luminosity,sumw[ii],cut))
                 else:
-                    selection=("(mcEventWeight*%f*%f/%f)*(%s)"%(getCrossSection(inputFile),options.luminosity,sumw[ii],cut))
-                    #selection=("(mcEventWeight*%f*%f/%f)*(%s)"%(1,1,1,cut))
+                    selection=("(mcEventWeights[%i]*%f*%f/%f)*(%s)"%(weight,getCrossSection(inputFile),options.luminosity,sumw[ii],cut))
                 if options.debug:
                     print("INFO :: Selection is %s" % selection)
                 currentROOTTree.Draw(variable+">>"+histoName,selection,"goff")                                

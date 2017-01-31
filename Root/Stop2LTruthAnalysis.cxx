@@ -105,7 +105,7 @@ EL::StatusCode Stop2LTruthAnalysis :: histInitialize ()
   // trees.  This method gets called before any input files are
   // connected.
 
-  h_cutflow_weighted = new TH1D("CutflowWeighted","CutflowWeighted",10,0.,10.);
+  h_cutflow_weighted = new TH1D("CutflowWeighted","CutflowWeighted",1000,0.,1000.);
   h_cutflow_weighted->Sumw2();
 
   if(saveHists) {
@@ -300,24 +300,24 @@ EL::StatusCode Stop2LTruthAnalysis :: initialize ()
   if(m_mcTruthClassifier == nullptr) m_mcTruthClassifier = new MCTruthClassifier("myMCTruthClassifier"); 
   EL_RETURN_CHECK( "setup MCTruthClassifier()", m_mcTruthClassifier->initialize());
 
-  // Setup Polarization
-  if(m_polreweight == nullptr) { 
-    m_polreweight = new StopPolarization::PolarizationReweight; 
-    m_polreweight->setUnitMeV(); // set MeV
-    m_polreweight->setMassW(80399.); 
-    m_polreweight->setWidthW(2085.);
-    m_polreweight->setMassZ(91187.6);
-    m_polreweight->setWidthZ(2495.2);
-    m_polreweight->setMassTop(172500.);
-    m_polreweight->setWidthTop(1333.13);
-    m_polreweight->setMassWThreshold(0.);
-    m_polreweight->setMassZThreshold(0.);
-    m_polreweight->setMassTopThreshold(54000.);
-    std::string generatorName = "MadGraphPythia8";
-    m_polreweight->setGeneratorName(generatorName);
-    m_polreweight->setDecayPythia(true);
-    m_polreweight->setPhaseSpaceOnly(true);
-  }
+  //// Setup Polarization
+  //if(m_polreweight == nullptr) { 
+  //  m_polreweight = new StopPolarization::PolarizationReweight; 
+  //  m_polreweight->setUnitMeV(); // set MeV
+  //  m_polreweight->setMassW(80399.); 
+  //  m_polreweight->setWidthW(2085.);
+  //  m_polreweight->setMassZ(91187.6);
+  //  m_polreweight->setWidthZ(2495.2);
+  //  m_polreweight->setMassTop(172500.);
+  //  m_polreweight->setWidthTop(1333.13);
+  //  m_polreweight->setMassWThreshold(0.);
+  //  m_polreweight->setMassZThreshold(0.);
+  //  m_polreweight->setMassTopThreshold(54000.);
+  //  std::string generatorName = "MadGraphPythia8";
+  //  m_polreweight->setGeneratorName(generatorName);
+  //  m_polreweight->setDecayPythia(true);
+  //  m_polreweight->setPhaseSpaceOnly(true);
+  //}
 
   // TEST Wmass line fit
   h_wmassFit = new TF1("h_wmassFit","[0]*x*x+[1]*x+[2]",60,100);
@@ -409,11 +409,11 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   ////////////////////////////////
   // Polarization reweighting 
   float polweight_R = 0, polweight_L = 0, polweight_M = 0.; 
-  if(isSignal) { 
-    polweight_R = m_polreweight->getReweightTopNeutralino(truthParticles, 1.40639, 0.7853981634); // Right
-    polweight_L = m_polreweight->getReweightTopNeutralino(truthParticles, 0.00000, 0.7853981634); // Left
-    polweight_M = m_polreweight->getReweightTopNeutralino(truthParticles, 0.7853981634, 0.7853981634); // Mass-only
-  }
+  //if(isSignal) { 
+  //  polweight_R = m_polreweight->getReweightTopNeutralino(truthParticles, 1.40639, 0.7853981634); // Right
+  //  polweight_L = m_polreweight->getReweightTopNeutralino(truthParticles, 0.00000, 0.7853981634); // Left
+  //  polweight_M = m_polreweight->getReweightTopNeutralino(truthParticles, 0.7853981634, 0.7853981634); // Mass-only
+  //}
   //////////////////////////////
  
   // Event counter and weight
@@ -423,7 +423,12 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   }
   float eventWeight = eventInfo->mcEventWeight(); // Event weight
   //eventWeight *= polweight; // Polarization reweight
-  h_cutflow_weighted->Fill(0.,eventWeight);
+  //h_cutflow_weighted->Fill(0.,eventWeight);
+  std::vector<float> all_weights = eventInfo->mcEventWeights();
+  for(unsigned int iw=0; iw<all_weights.size(); ++iw){
+    h_cutflow_weighted->Fill(iw,all_weights.at(iw));
+  }
+  all_weights.clear();
 
   // Signal specific code
   double thetal[2] = {0.};
@@ -441,274 +446,275 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   double wPt[2]    = {0.};
   double wMass[2]  = {0.};
 
-  ////////////////////////////
-  // Wmass/width
-  const xAOD::TruthParticle *wboson         = nullptr, 
-                            *wlepton        = nullptr,
-                            *wneutrino      = nullptr;
-  const xAOD::TruthParticle *wbosons[2]     = { nullptr }, 
-                            *wleptons[2]    = { nullptr },
-                            *wneutrinos[2]  = { nullptr };
-  bool selfDecay = false;
-  // Try following the vertices
-  for(const auto& truthVertex : *truthVertices) {
-    if( truthVertex->nIncomingParticles() == 1 && truthVertex->nOutgoingParticles() == 2) {
-      const xAOD::TruthParticle* truthMother = truthVertex->incomingParticle(0);
-      if(!truthMother->isW()) continue;
-      unsigned int fillIndex = truthMother->pdgId() > 0 ? 0 : 1;
-      wbosons[fillIndex] = truthMother;
-    }
-  }
-  // Check of all particles exist
-  if( wbosons[0] == nullptr     || wbosons[1] == nullptr ) return EL::StatusCode::SUCCESS;
+//  ////////////////////////////
+//  // Wmass/width
+//  const xAOD::TruthParticle *wboson         = nullptr, 
+//                            *wlepton        = nullptr,
+//                            *wneutrino      = nullptr;
+//  const xAOD::TruthParticle *wbosons[2]     = { nullptr }, 
+//                            *wleptons[2]    = { nullptr },
+//                            *wneutrinos[2]  = { nullptr };
+//  bool selfDecay = false;
+//  // Try following the vertices
+//  for(const auto& truthVertex : *truthVertices) {
+//    if( truthVertex->nIncomingParticles() == 1 && truthVertex->nOutgoingParticles() == 2) {
+//      const xAOD::TruthParticle* truthMother = truthVertex->incomingParticle(0);
+//      if(!truthMother->isW()) continue;
+//      unsigned int fillIndex = truthMother->pdgId() > 0 ? 0 : 1;
+//      wbosons[fillIndex] = truthMother;
+//    }
+//  }
+//  // Check of all particles exist
+//  if( wbosons[0] == nullptr     || wbosons[1] == nullptr ) return EL::StatusCode::SUCCESS;
+//
+//  // Now find leptons from Ws
+//  if(wbosons[0] != nullptr) {
+//    selfDecay=false;
+//    wboson = wbosons[0];
+//    do{
+//      for(unsigned int i=0; i<wboson->nChildren();i++) {
+//        selfDecay=false;
+//        const xAOD::TruthParticle* child = wboson->child(i);
+//        if( child->pdgId()==wboson->pdgId() ){
+//          wboson = child;
+//          selfDecay = true;
+//          break;
+//        }
+//        else if ( child->isChLepton() ) {
+//          wlepton = child;
+//          wleptons[0] = wlepton;
+//        }
+//        else if ( child->isNeutrino() ) {
+//          wneutrino = child;
+//          wneutrinos[0] = wneutrino;
+//        }
+//      }
+//    } while(selfDecay);
+//  }
+//
+//  if(wbosons[1] != nullptr) {
+//    selfDecay=false;
+//    wboson = wbosons[1];
+//    do{
+//      for(unsigned int i=0; i<wboson->nChildren();i++) {
+//        selfDecay=false;
+//        const xAOD::TruthParticle* child = wboson->child(i);
+//        if( child->pdgId()==wboson->pdgId() ){
+//          wboson = child;
+//          selfDecay = true;
+//          break;
+//        }
+//        else if ( child->isChLepton() ) {
+//          wlepton = child;
+//          wleptons[1] = wlepton;
+//        }
+//        else if ( child->isNeutrino() ) {
+//          wneutrino = child;
+//          wneutrinos[1] = wneutrino;
+//        }
+//      }
+//    } while(selfDecay);
+//  }
+//
+//  // Make sure the leptons exist
+//  if(wleptons[0] == nullptr || wleptons[1] == nullptr || wneutrinos[0] == nullptr || wneutrinos[1] == nullptr) {
+//    return EL::StatusCode::SUCCESS; 
+//  }
+//
+//  for(unsigned int ipar=0; ipar<2; ipar++) {
+//    wPt[ipar]                     = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).Pt();
+//    wMass[ipar]                   = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).M();
+//  }
+//
+//  ////////////////////////////
 
-  // Now find leptons from Ws
-  if(wbosons[0] != nullptr) {
-    selfDecay=false;
-    wboson = wbosons[0];
-    do{
-      for(unsigned int i=0; i<wboson->nChildren();i++) {
-        selfDecay=false;
-        const xAOD::TruthParticle* child = wboson->child(i);
-        if( child->pdgId()==wboson->pdgId() ){
-          wboson = child;
-          selfDecay = true;
-          break;
-        }
-        else if ( child->isChLepton() ) {
-          wlepton = child;
-          wleptons[0] = wlepton;
-        }
-        else if ( child->isNeutrino() ) {
-          wneutrino = child;
-          wneutrinos[0] = wneutrino;
-        }
-      }
-    } while(selfDecay);
-  }
-
-  if(wbosons[1] != nullptr) {
-    selfDecay=false;
-    wboson = wbosons[1];
-    do{
-      for(unsigned int i=0; i<wboson->nChildren();i++) {
-        selfDecay=false;
-        const xAOD::TruthParticle* child = wboson->child(i);
-        if( child->pdgId()==wboson->pdgId() ){
-          wboson = child;
-          selfDecay = true;
-          break;
-        }
-        else if ( child->isChLepton() ) {
-          wlepton = child;
-          wleptons[1] = wlepton;
-        }
-        else if ( child->isNeutrino() ) {
-          wneutrino = child;
-          wneutrinos[1] = wneutrino;
-        }
-      }
-    } while(selfDecay);
-  }
-
-  // Make sure the leptons exist
-  if(wleptons[0] == nullptr || wleptons[1] == nullptr || wneutrinos[0] == nullptr || wneutrinos[1] == nullptr) {
-    return EL::StatusCode::SUCCESS; 
-  }
-
-  for(unsigned int ipar=0; ipar<2; ipar++) {
-    wPt[ipar]                     = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).Pt();
-    wMass[ipar]                   = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).M();
-  }
-
-  ////////////////////////////
-  ////////////////////////////
-  if(isSignal) {
-
-    // Loop over truth particles to find the stop
-    const xAOD::TruthParticle *stop           = nullptr, 
-                              *bquark         = nullptr, 
-                              *neutralino     = nullptr, 
-                              *wboson         = nullptr, 
-                              *wlepton        = nullptr,
-                              *wneutrino      = nullptr;
-    const xAOD::TruthParticle *stops[2]       = { nullptr }, 
-                              *bquarks[2]     = { nullptr },
-                              *neutralinos[2] = { nullptr },
-                              *wbosons[2]     = { nullptr },
-                              *wleptons[2]    = { nullptr },
-                              *wneutrinos[2]  = { nullptr };
-    bool selfDecay = false;
-
-    // Try following the vertices
-    for(const auto& truthVertex : *truthVertices) {
-      // Three-Body
-      if( truthVertex->nIncomingParticles() == 1 && truthVertex->nOutgoingParticles() == 3) {
-        const xAOD::TruthParticle* truthMother = truthVertex->incomingParticle(0);
-        if(truthMother->absPdgId()!=1000006) continue;
-        unsigned int fillIndex = truthMother->pdgId() > 0 ? 0 : 1;
-        stops[fillIndex] = truthMother;
-        for(unsigned int ijk=0; ijk<3; ijk++) {
-          const xAOD::TruthParticle* truthChild = truthVertex->outgoingParticle(ijk);
-          if(truthChild->absPdgId()==1000022) { neutralinos[fillIndex] = truthChild; }
-          else if(truthChild->absPdgId()==5)  { bquarks[fillIndex]     = truthChild; }
-          else if(truthChild->isW())          { wbosons[fillIndex]     = truthChild; }
-        }
-      }
-      // Four-body
-      if( truthVertex->nIncomingParticles() == 1 && truthVertex->nOutgoingParticles() == 4) {
-        const xAOD::TruthParticle* truthMother = truthVertex->incomingParticle(0);
-        if(truthMother->absPdgId()!=1000006) continue;
-        unsigned int fillIndex = truthMother->pdgId() > 0 ? 0 : 1;
-        stops[fillIndex] = truthMother;
-        for(unsigned int ijk=0; ijk<4; ijk++) {
-          const xAOD::TruthParticle* truthChild = truthVertex->outgoingParticle(ijk);
-          if(truthChild->absPdgId()==1000022) { neutralinos[fillIndex] = truthChild; }
-          else if(truthChild->absPdgId()==5)  { bquarks[fillIndex]     = truthChild; }
-          else if(truthChild->isChLepton())   { wleptons[fillIndex]    = truthChild; }
-          else if(truthChild->isNeutrino())   { wneutrinos[fillIndex]  = truthChild; }
-        }
-      }
-    }
-
-    // Check of all particles exist
-    if(
-       stops[0] == nullptr       || stops[1] == nullptr       ||
-       //wbosons[0] == nullptr     || wbosons[1] == nullptr     ||
-       neutralinos[0] == nullptr || neutralinos[1] == nullptr ||
-       bquarks[0] == nullptr     || bquarks[1] == nullptr     
-      ) return EL::StatusCode::SUCCESS;
-
-    // Now find leptons from Ws
-    if(wbosons[0] != nullptr) {
-      selfDecay=false;
-      wboson = wbosons[0];
-      do{
-        for(unsigned int i=0; i<wboson->nChildren();i++) {
-          selfDecay=false;
-          const xAOD::TruthParticle* child = wboson->child(i);
-          if( child->pdgId()==wboson->pdgId() ){
-            wboson = child;
-            selfDecay = true;
-            break;
-          }
-          else if ( child->isChLepton() ) {
-            wlepton = child;
-            wleptons[0] = wlepton;
-          }
-          else if ( child->isNeutrino() ) {
-            wneutrino = child;
-            wneutrinos[0] = wneutrino;
-          }
-        }
-      } while(selfDecay);
-    }
-
-    if(wbosons[1] != nullptr) {
-      selfDecay=false;
-      wboson = wbosons[1];
-      do{
-        for(unsigned int i=0; i<wboson->nChildren();i++) {
-          selfDecay=false;
-          const xAOD::TruthParticle* child = wboson->child(i);
-          if( child->pdgId()==wboson->pdgId() ){
-            wboson = child;
-            selfDecay = true;
-            break;
-          }
-          else if ( child->isChLepton() ) {
-            wlepton = child;
-            wleptons[1] = wlepton;
-          }
-          else if ( child->isNeutrino() ) {
-            wneutrino = child;
-            wneutrinos[1] = wneutrino;
-          }
-        }
-      } while(selfDecay);
-    }
-
-    // Make sure the leptons exist
-    if(wleptons[0] == nullptr || wleptons[1] == nullptr || wneutrinos[0] == nullptr || wneutrinos[1] == nullptr) {
-      return EL::StatusCode::SUCCESS; 
-    }
-
-    //// Non FSR leptons
-    //if(!((wleptons[0]->status()==23&&wleptons[1]->status()==23)||
-    //     (wleptons[0]->status()==11&&wleptons[1]->status()==11))) return EL::StatusCode::SUCCESS; 
-
-    //// Print information
-    //Info("execute()","============================================================================================================");
-    //printTruthInfo(stops[0]);       printTruthInfo(stops[1]); 
-    //Info("execute()","------------------------------------------------------------------------------------------------------------");
-    //printTruthInfo(bquarks[0]);     printTruthInfo(bquarks[1]); 
-    //printTruthInfo(neutralinos[0]); printTruthInfo(neutralinos[1]); 
-    ////printTruthInfo(wbosons[0]);     printTruthInfo(wbosons[1]); 
-    ////Info("execute()","------------------------------------------------------------------------------------------------------------");
-    //printTruthInfo(wleptons[0]);    printTruthInfo(wleptons[1]); 
-    //printTruthInfo(wneutrinos[0]);  printTruthInfo(wneutrinos[1]); 
-    //Info("execute()","------------------------------------------------------------------------------------------------------------");
-    //Info("execute()"," W candidate 0 Pt %*.2f \t Eta %*.2f \t Phi %*.2f \t Mass %*.2f", 8, (wleptons[0]->p4()+wneutrinos[0]->p4()).Pt()*MEVtoGEV,
-    //                                                                                    8, (wleptons[0]->p4()+wneutrinos[0]->p4()).Eta(),
-    //                                                                                    8, (wleptons[0]->p4()+wneutrinos[0]->p4()).Phi(),
-    //                                                                                    8, (wleptons[0]->p4()+wneutrinos[0]->p4()).M()*MEVtoGEV);
-    //Info("execute()"," W candidate 1 Pt %*.2f \t Eta %*.2f \t Phi %*.2f \t Mass %*.2f", 8, (wleptons[1]->p4()+wneutrinos[1]->p4()).Pt()*MEVtoGEV,
-    //                                                                                    8, (wleptons[1]->p4()+wneutrinos[1]->p4()).Eta(),
-    //                                                                                    8, (wleptons[1]->p4()+wneutrinos[1]->p4()).Phi(),
-    //                                                                                    8, (wleptons[1]->p4()+wneutrinos[1]->p4()).M()*MEVtoGEV);
-    //Info("execute()","============================================================================================================");
-
-    // Calculate the boosts
-    for(unsigned int ipar=0; ipar<2; ipar++) {
-      TLorentzVector top_hlv        = wleptons[ipar]->p4() + wneutrinos[ipar]->p4() + bquarks[ipar]->p4();
-      stPt[ipar]                    = stops[ipar]->p4().Pt();
-      stMass[ipar]                  = stops[ipar]->p4().M();
-      n1Pt[ipar]                    = neutralinos[ipar]->p4().Pt();
-      n1Mass[ipar]                  = neutralinos[ipar]->p4().M();
-      wPt[ipar]                     = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).Pt();
-      wMass[ipar]                   = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).M();
-      wbPt[ipar]                    = top_hlv.Pt();
-      wbMass[ipar]                  = top_hlv.M();
-      TLorentzVector lepton_hlv     = wleptons[ipar]->p4();
-      TLorentzVector neutralino_hlv = neutralinos[ipar]->p4();
-      TVector3 boostVec             = top_hlv.BoostVector();
-      lepton_hlv.Boost(-boostVec);
-      neutralino_hlv.Boost(-boostVec);
-      thetal[ipar]                  = neutralino_hlv.Angle(lepton_hlv.Vect());
-    }
-    n1n1pt   = (neutralinos[0]->p4()+neutralinos[1]->p4()).Pt();
-    n1n1phi  = (neutralinos[0]->p4()).DeltaPhi(neutralinos[1]->p4());
-    ststpt   = (stops[0]->p4()+stops[1]->p4()).Pt();
-    ststphi  = (stops[0]->p4()).DeltaPhi(stops[1]->p4());
-    ststmass = (stops[0]->p4()+stops[1]->p4()).M();
-
-    // Compute and fill core event variables
-    if(saveHists) {
-      h_hists1D.at(m_nameToIndex1D["stop0mass"]      )->Fill(stops[0]->p4().M()*MEVtoGEV                      ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["stop1mass"]      )->Fill(stops[1]->p4().M()*MEVtoGEV                      ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["stop0pt"]        )->Fill(stops[0]->p4().Pt()*MEVtoGEV                     ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["stop1pt"]        )->Fill(stops[1]->p4().Pt()*MEVtoGEV                     ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["sTsTPt"]         )->Fill((stops[0]->p4()+stops[1]->p4()).Pt()*MEVtoGEV    ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["deltaRsTsT"]     )->Fill(stops[0]->p4().DeltaR(stops[1]->p4())            ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["deltaPhisTsT"]   )->Fill(stops[0]->p4().DeltaPhi(stops[1]->p4())          ,eventWeight);
-      //h_hists1D.at(m_nameToIndex1D["top0mass"]       )->Fill((wbosons[0]->p4()+bquarks[0]->p4()).M()*MEVtoGEV ,eventWeight);
-      //h_hists1D.at(m_nameToIndex1D["top1mass"]       )->Fill((wbosons[1]->p4()+bquarks[1]->p4()).M()*MEVtoGEV ,eventWeight);
-      //h_hists1D.at(m_nameToIndex1D["wboson0mass"]    )->Fill(wbosons[0]    ->p4().M() *MEVtoGEV               ,eventWeight);
-      //h_hists1D.at(m_nameToIndex1D["wboson1mass"]    )->Fill(wbosons[1]    ->p4().M() *MEVtoGEV               ,eventWeight);
-      //h_hists1D.at(m_nameToIndex1D["wboson0pt"]      )->Fill(wbosons[0]    ->p4().Pt()*MEVtoGEV               ,eventWeight);
-      //h_hists1D.at(m_nameToIndex1D["wboson1pt"]      )->Fill(wbosons[1]    ->p4().Pt()*MEVtoGEV               ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["wlepton0pt"]     )->Fill(wleptons[0]   ->p4().Pt()*MEVtoGEV               ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["wlepton1pt"]     )->Fill(wleptons[1]   ->p4().Pt()*MEVtoGEV               ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["bquark0pt"]      )->Fill(bquarks[0]    ->p4().Pt()*MEVtoGEV               ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["bquark1pt"]      )->Fill(bquarks[1]    ->p4().Pt()*MEVtoGEV               ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["neutralino0mass"])->Fill(neutralinos[0]->p4().M() *MEVtoGEV               ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["neutralino1mass"])->Fill(neutralinos[1]->p4().M() *MEVtoGEV               ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["neutralino0pt"]  )->Fill(neutralinos[0]->p4().Pt()*MEVtoGEV               ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["neutralino1pt"]  )->Fill(neutralinos[1]->p4().Pt()*MEVtoGEV               ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["cosThetaL"]      )->Fill(cos(thetal[0])                                   ,eventWeight);
-      h_hists1D.at(m_nameToIndex1D["cosThetaL"]      )->Fill(cos(thetal[1])                                   ,eventWeight);
-    } // end of save signal hists                                           
-  } // end of signal specific calculations                                  
+//  ////////////////////////////
+//  if(isSignal) {
+//
+//    // Loop over truth particles to find the stop
+//    const xAOD::TruthParticle *stop           = nullptr, 
+//                              *bquark         = nullptr, 
+//                              *neutralino     = nullptr, 
+//                              *wboson         = nullptr, 
+//                              *wlepton        = nullptr,
+//                              *wneutrino      = nullptr;
+//    const xAOD::TruthParticle *stops[2]       = { nullptr }, 
+//                              *bquarks[2]     = { nullptr },
+//                              *neutralinos[2] = { nullptr },
+//                              *wbosons[2]     = { nullptr },
+//                              *wleptons[2]    = { nullptr },
+//                              *wneutrinos[2]  = { nullptr };
+//    bool selfDecay = false;
+//
+//    // Try following the vertices
+//    for(const auto& truthVertex : *truthVertices) {
+//      // Three-Body
+//      if( truthVertex->nIncomingParticles() == 1 && truthVertex->nOutgoingParticles() == 3) {
+//        const xAOD::TruthParticle* truthMother = truthVertex->incomingParticle(0);
+//        if(truthMother->absPdgId()!=1000006) continue;
+//        unsigned int fillIndex = truthMother->pdgId() > 0 ? 0 : 1;
+//        stops[fillIndex] = truthMother;
+//        for(unsigned int ijk=0; ijk<3; ijk++) {
+//          const xAOD::TruthParticle* truthChild = truthVertex->outgoingParticle(ijk);
+//          if(truthChild->absPdgId()==1000022) { neutralinos[fillIndex] = truthChild; }
+//          else if(truthChild->absPdgId()==5)  { bquarks[fillIndex]     = truthChild; }
+//          else if(truthChild->isW())          { wbosons[fillIndex]     = truthChild; }
+//        }
+//      }
+//      // Four-body
+//      if( truthVertex->nIncomingParticles() == 1 && truthVertex->nOutgoingParticles() == 4) {
+//        const xAOD::TruthParticle* truthMother = truthVertex->incomingParticle(0);
+//        if(truthMother->absPdgId()!=1000006) continue;
+//        unsigned int fillIndex = truthMother->pdgId() > 0 ? 0 : 1;
+//        stops[fillIndex] = truthMother;
+//        for(unsigned int ijk=0; ijk<4; ijk++) {
+//          const xAOD::TruthParticle* truthChild = truthVertex->outgoingParticle(ijk);
+//          if(truthChild->absPdgId()==1000022) { neutralinos[fillIndex] = truthChild; }
+//          else if(truthChild->absPdgId()==5)  { bquarks[fillIndex]     = truthChild; }
+//          else if(truthChild->isChLepton())   { wleptons[fillIndex]    = truthChild; }
+//          else if(truthChild->isNeutrino())   { wneutrinos[fillIndex]  = truthChild; }
+//        }
+//      }
+//    }
+//
+//    // Check of all particles exist
+//    if(
+//       stops[0] == nullptr       || stops[1] == nullptr       ||
+//       //wbosons[0] == nullptr     || wbosons[1] == nullptr     ||
+//       neutralinos[0] == nullptr || neutralinos[1] == nullptr ||
+//       bquarks[0] == nullptr     || bquarks[1] == nullptr     
+//      ) return EL::StatusCode::SUCCESS;
+//
+//    // Now find leptons from Ws
+//    if(wbosons[0] != nullptr) {
+//      selfDecay=false;
+//      wboson = wbosons[0];
+//      do{
+//        for(unsigned int i=0; i<wboson->nChildren();i++) {
+//          selfDecay=false;
+//          const xAOD::TruthParticle* child = wboson->child(i);
+//          if( child->pdgId()==wboson->pdgId() ){
+//            wboson = child;
+//            selfDecay = true;
+//            break;
+//          }
+//          else if ( child->isChLepton() ) {
+//            wlepton = child;
+//            wleptons[0] = wlepton;
+//          }
+//          else if ( child->isNeutrino() ) {
+//            wneutrino = child;
+//            wneutrinos[0] = wneutrino;
+//          }
+//        }
+//      } while(selfDecay);
+//    }
+//
+//    if(wbosons[1] != nullptr) {
+//      selfDecay=false;
+//      wboson = wbosons[1];
+//      do{
+//        for(unsigned int i=0; i<wboson->nChildren();i++) {
+//          selfDecay=false;
+//          const xAOD::TruthParticle* child = wboson->child(i);
+//          if( child->pdgId()==wboson->pdgId() ){
+//            wboson = child;
+//            selfDecay = true;
+//            break;
+//          }
+//          else if ( child->isChLepton() ) {
+//            wlepton = child;
+//            wleptons[1] = wlepton;
+//          }
+//          else if ( child->isNeutrino() ) {
+//            wneutrino = child;
+//            wneutrinos[1] = wneutrino;
+//          }
+//        }
+//      } while(selfDecay);
+//    }
+//
+//    // Make sure the leptons exist
+//    if(wleptons[0] == nullptr || wleptons[1] == nullptr || wneutrinos[0] == nullptr || wneutrinos[1] == nullptr) {
+//      return EL::StatusCode::SUCCESS; 
+//    }
+//
+//    //// Non FSR leptons
+//    //if(!((wleptons[0]->status()==23&&wleptons[1]->status()==23)||
+//    //     (wleptons[0]->status()==11&&wleptons[1]->status()==11))) return EL::StatusCode::SUCCESS; 
+//
+//    //// Print information
+//    //Info("execute()","============================================================================================================");
+//    //printTruthInfo(stops[0]);       printTruthInfo(stops[1]); 
+//    //Info("execute()","------------------------------------------------------------------------------------------------------------");
+//    //printTruthInfo(bquarks[0]);     printTruthInfo(bquarks[1]); 
+//    //printTruthInfo(neutralinos[0]); printTruthInfo(neutralinos[1]); 
+//    ////printTruthInfo(wbosons[0]);     printTruthInfo(wbosons[1]); 
+//    ////Info("execute()","------------------------------------------------------------------------------------------------------------");
+//    //printTruthInfo(wleptons[0]);    printTruthInfo(wleptons[1]); 
+//    //printTruthInfo(wneutrinos[0]);  printTruthInfo(wneutrinos[1]); 
+//    //Info("execute()","------------------------------------------------------------------------------------------------------------");
+//    //Info("execute()"," W candidate 0 Pt %*.2f \t Eta %*.2f \t Phi %*.2f \t Mass %*.2f", 8, (wleptons[0]->p4()+wneutrinos[0]->p4()).Pt()*MEVtoGEV,
+//    //                                                                                    8, (wleptons[0]->p4()+wneutrinos[0]->p4()).Eta(),
+//    //                                                                                    8, (wleptons[0]->p4()+wneutrinos[0]->p4()).Phi(),
+//    //                                                                                    8, (wleptons[0]->p4()+wneutrinos[0]->p4()).M()*MEVtoGEV);
+//    //Info("execute()"," W candidate 1 Pt %*.2f \t Eta %*.2f \t Phi %*.2f \t Mass %*.2f", 8, (wleptons[1]->p4()+wneutrinos[1]->p4()).Pt()*MEVtoGEV,
+//    //                                                                                    8, (wleptons[1]->p4()+wneutrinos[1]->p4()).Eta(),
+//    //                                                                                    8, (wleptons[1]->p4()+wneutrinos[1]->p4()).Phi(),
+//    //                                                                                    8, (wleptons[1]->p4()+wneutrinos[1]->p4()).M()*MEVtoGEV);
+//    //Info("execute()","============================================================================================================");
+//
+//    // Calculate the boosts
+//    for(unsigned int ipar=0; ipar<2; ipar++) {
+//      TLorentzVector top_hlv        = wleptons[ipar]->p4() + wneutrinos[ipar]->p4() + bquarks[ipar]->p4();
+//      stPt[ipar]                    = stops[ipar]->p4().Pt();
+//      stMass[ipar]                  = stops[ipar]->p4().M();
+//      n1Pt[ipar]                    = neutralinos[ipar]->p4().Pt();
+//      n1Mass[ipar]                  = neutralinos[ipar]->p4().M();
+//      wPt[ipar]                     = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).Pt();
+//      wMass[ipar]                   = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).M();
+//      wbPt[ipar]                    = top_hlv.Pt();
+//      wbMass[ipar]                  = top_hlv.M();
+//      TLorentzVector lepton_hlv     = wleptons[ipar]->p4();
+//      TLorentzVector neutralino_hlv = neutralinos[ipar]->p4();
+//      TVector3 boostVec             = top_hlv.BoostVector();
+//      lepton_hlv.Boost(-boostVec);
+//      neutralino_hlv.Boost(-boostVec);
+//      thetal[ipar]                  = neutralino_hlv.Angle(lepton_hlv.Vect());
+//    }
+//    n1n1pt   = (neutralinos[0]->p4()+neutralinos[1]->p4()).Pt();
+//    n1n1phi  = (neutralinos[0]->p4()).DeltaPhi(neutralinos[1]->p4());
+//    ststpt   = (stops[0]->p4()+stops[1]->p4()).Pt();
+//    ststphi  = (stops[0]->p4()).DeltaPhi(stops[1]->p4());
+//    ststmass = (stops[0]->p4()+stops[1]->p4()).M();
+//
+//    // Compute and fill core event variables
+//    if(saveHists) {
+//      h_hists1D.at(m_nameToIndex1D["stop0mass"]      )->Fill(stops[0]->p4().M()*MEVtoGEV                      ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["stop1mass"]      )->Fill(stops[1]->p4().M()*MEVtoGEV                      ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["stop0pt"]        )->Fill(stops[0]->p4().Pt()*MEVtoGEV                     ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["stop1pt"]        )->Fill(stops[1]->p4().Pt()*MEVtoGEV                     ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["sTsTPt"]         )->Fill((stops[0]->p4()+stops[1]->p4()).Pt()*MEVtoGEV    ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["deltaRsTsT"]     )->Fill(stops[0]->p4().DeltaR(stops[1]->p4())            ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["deltaPhisTsT"]   )->Fill(stops[0]->p4().DeltaPhi(stops[1]->p4())          ,eventWeight);
+//      //h_hists1D.at(m_nameToIndex1D["top0mass"]       )->Fill((wbosons[0]->p4()+bquarks[0]->p4()).M()*MEVtoGEV ,eventWeight);
+//      //h_hists1D.at(m_nameToIndex1D["top1mass"]       )->Fill((wbosons[1]->p4()+bquarks[1]->p4()).M()*MEVtoGEV ,eventWeight);
+//      //h_hists1D.at(m_nameToIndex1D["wboson0mass"]    )->Fill(wbosons[0]    ->p4().M() *MEVtoGEV               ,eventWeight);
+//      //h_hists1D.at(m_nameToIndex1D["wboson1mass"]    )->Fill(wbosons[1]    ->p4().M() *MEVtoGEV               ,eventWeight);
+//      //h_hists1D.at(m_nameToIndex1D["wboson0pt"]      )->Fill(wbosons[0]    ->p4().Pt()*MEVtoGEV               ,eventWeight);
+//      //h_hists1D.at(m_nameToIndex1D["wboson1pt"]      )->Fill(wbosons[1]    ->p4().Pt()*MEVtoGEV               ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["wlepton0pt"]     )->Fill(wleptons[0]   ->p4().Pt()*MEVtoGEV               ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["wlepton1pt"]     )->Fill(wleptons[1]   ->p4().Pt()*MEVtoGEV               ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["bquark0pt"]      )->Fill(bquarks[0]    ->p4().Pt()*MEVtoGEV               ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["bquark1pt"]      )->Fill(bquarks[1]    ->p4().Pt()*MEVtoGEV               ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["neutralino0mass"])->Fill(neutralinos[0]->p4().M() *MEVtoGEV               ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["neutralino1mass"])->Fill(neutralinos[1]->p4().M() *MEVtoGEV               ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["neutralino0pt"]  )->Fill(neutralinos[0]->p4().Pt()*MEVtoGEV               ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["neutralino1pt"]  )->Fill(neutralinos[1]->p4().Pt()*MEVtoGEV               ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["cosThetaL"]      )->Fill(cos(thetal[0])                                   ,eventWeight);
+//      h_hists1D.at(m_nameToIndex1D["cosThetaL"]      )->Fill(cos(thetal[1])                                   ,eventWeight);
+//    } // end of save signal hists                                           
+//  } // end of signal specific calculations                                  
 
   // Loop over truth particles and store electrons and muons
   std::vector<const xAOD::TruthParticle*> *electrons = new std::vector<const xAOD::TruthParticle*>();
@@ -1144,8 +1150,8 @@ EL::StatusCode Stop2LTruthAnalysis :: finalize ()
   delete m_mcTruthClassifier;
   m_mcTruthClassifier=nullptr;
 
-  delete m_polreweight;
-  m_polreweight=nullptr;
+  //delete m_polreweight;
+  //m_polreweight=nullptr;
 
   delete m_random;
   m_random=nullptr;

@@ -5,7 +5,7 @@
 
 #include <MCTruthClassifier/MCTruthClassifier.h>
 
-#include <StopPolarization/PolarizationReweight.h>
+//#include <StopPolarization/PolarizationReweight.h>
 
 #include <TH1.h>
 #include <TH2.h>
@@ -140,7 +140,7 @@ public:
   MCTruthClassifier* m_mcTruthClassifier = nullptr; //!
 
   // StopPolarization
-  StopPolarization::PolarizationReweight* m_polreweight = nullptr; //!
+  //StopPolarization::PolarizationReweight* m_polreweight = nullptr; //!
 
   // Random number
   TRandom3*    m_random = nullptr; //!
