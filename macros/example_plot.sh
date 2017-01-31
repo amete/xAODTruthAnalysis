@@ -1,5 +1,10 @@
 #!/bin/bash
 
+var="truth_wmass"
+var="${var},mT2ll"
+
+python make_plots.py -i "MG5Py8_WpWm_Nominal,MG5Py8_WpWm_Up1Sigma,MG5Py8_WpWm_Dn1Sigma" -v "${var}" -r "VR_STOP2L_INC" -f "eps" -l 35000 -b -a -L; 
+
 #var="bjet_n"
 ##var="${var},c_bjet_n"
 #var="${var},mDRll"
@@ -67,37 +72,37 @@
 #var="truth_wbmass"
 #var="${var},TMath::Cos(truth_thetal)"
 
-var="truth_wbmass"
-var="${var},truth_wmass"
-var="${var},TMath::Cos(truth_thetal)"
-var2="truth_ststpt"
-var2="${var2},mDRll"
-var2="${var2},truth_ststphi"
-var2="${var2},truth_n1n1pt"
-var2="${var2},truth_n1n1phi"
-var2="${var2},met_et"
-var2="${var2},mll"
-var2="${var2},RPT"
-var2="${var2},gamInvRp1"
-var2="${var2},DPB_vSS"
-var2="${var2},cosTheta_b"
-var2="${var2},dphill"
-var2="${var2},ptll"
-var2="${var2},mT2ll"
-var2="${var2},nonbjet_n"
-var2="${var2},nonbjet_pt[0]"
-var2="${var2},bjet_n"
-var2="${var2},bjet_pt[0]"
-var2="${var2},lepton_pt[0]"
-var2="${var2},lepton_pt[1]"
-
-### Sleptons
-#var="${var},susyID"
-#python make_plots.py -i "MadgraphSlep_100vs1" -v "${var}" -r "VR_SUSY_LEP" -f "eps" -l 1 -b;
-
-### Stop Polarization
-python make_plots.py -i "MadGraphFM_350vs230,MadSpinBW15_350vs230,MadSpinBFFN_350vs230" -v "${var}" -r "ALL" -f "eps" -l 10000 -b -a -L; 
-python make_plots.py -i "MadGraphFM_350vs230,MadSpinBW15_350vs230,MadSpinBFFN_350vs230" -v "${var2}" -r "ALL" -f "eps" -l 10000 -b -a -L; 
+#var="truth_wbmass"
+#var="${var},TMath::Cos(truth_thetal)"
+#var2="truth_ststpt"
+#var2="${var2},truth_wmass"
+#var2="${var2},mDRll"
+#var2="${var2},truth_ststphi"
+#var2="${var2},truth_n1n1pt"
+#var2="${var2},truth_n1n1phi"
+#var2="${var2},met_et"
+#var2="${var2},mll"
+#var2="${var2},RPT"
+#var2="${var2},gamInvRp1"
+#var2="${var2},DPB_vSS"
+#var2="${var2},cosTheta_b"
+#var2="${var2},dphill"
+#var2="${var2},ptll"
+#var2="${var2},mT2ll"
+#var2="${var2},nonbjet_n"
+#var2="${var2},nonbjet_pt[0]"
+#var2="${var2},bjet_n"
+#var2="${var2},bjet_pt[0]"
+#var2="${var2},lepton_pt[0]"
+#var2="${var2},lepton_pt[1]"
+#
+#### Sleptons
+##var="${var},susyID"
+##python make_plots.py -i "MadgraphSlep_100vs1" -v "${var}" -r "VR_SUSY_LEP" -f "eps" -l 1 -b;
+#
+#### Stop Polarization
+#python make_plots.py -i "MadGraphFM_350vs230,MadSpinBWN_350vs230,MadSpinBFFN_350vs230" -v "${var}" -r "ALL" -f "eps" -l 10000 -b -a; 
+#python make_plots.py -i "MadGraphFM_350vs230,MadSpinBWN_350vs230,MadSpinBFFN_350vs230" -v "${var2}" -r "ALL" -f "eps" -l 10000 -b -a -L; 
 #python make_plots.py -i "MadgraphFM_350vs270,MadSpin_350vs270,Marilea_350vs270,Pythia_350vs270" -v "${var}" -r "ALL" -f "eps" -l 10000 -b -a; 
 #python make_plots.py -i "MadgraphFM_350vs270,MadSpin_350vs270,Pythia_350vs270" -v "${var2}" -r "ALL" -f "eps" -l 10000 -b -a -L; 
 ##python make_plots.py -i "Herwigpp_300vs180,MadgraphF_300vs180,MadgraphR_300vs180,MadgraphM_300vs180,MadgraphL_300vs180,Madgraph_300vs180" -v "${var}" -r "VR_STOP2L_INC" -f "eps" -l 10000 -b -a; 

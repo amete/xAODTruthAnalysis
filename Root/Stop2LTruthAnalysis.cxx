@@ -440,6 +440,89 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   double wbMass[2] = {0.};
   double wPt[2]    = {0.};
   double wMass[2]  = {0.};
+
+  ////////////////////////////
+  // Wmass/width
+  const xAOD::TruthParticle *wboson         = nullptr, 
+                            *wlepton        = nullptr,
+                            *wneutrino      = nullptr;
+  const xAOD::TruthParticle *wbosons[2]     = { nullptr }, 
+                            *wleptons[2]    = { nullptr },
+                            *wneutrinos[2]  = { nullptr };
+  bool selfDecay = false;
+  // Try following the vertices
+  for(const auto& truthVertex : *truthVertices) {
+    if( truthVertex->nIncomingParticles() == 1 && truthVertex->nOutgoingParticles() == 2) {
+      const xAOD::TruthParticle* truthMother = truthVertex->incomingParticle(0);
+      if(!truthMother->isW()) continue;
+      unsigned int fillIndex = truthMother->pdgId() > 0 ? 0 : 1;
+      wbosons[fillIndex] = truthMother;
+    }
+  }
+  // Check of all particles exist
+  if( wbosons[0] == nullptr     || wbosons[1] == nullptr ) return EL::StatusCode::SUCCESS;
+
+  // Now find leptons from Ws
+  if(wbosons[0] != nullptr) {
+    selfDecay=false;
+    wboson = wbosons[0];
+    do{
+      for(unsigned int i=0; i<wboson->nChildren();i++) {
+        selfDecay=false;
+        const xAOD::TruthParticle* child = wboson->child(i);
+        if( child->pdgId()==wboson->pdgId() ){
+          wboson = child;
+          selfDecay = true;
+          break;
+        }
+        else if ( child->isChLepton() ) {
+          wlepton = child;
+          wleptons[0] = wlepton;
+        }
+        else if ( child->isNeutrino() ) {
+          wneutrino = child;
+          wneutrinos[0] = wneutrino;
+        }
+      }
+    } while(selfDecay);
+  }
+
+  if(wbosons[1] != nullptr) {
+    selfDecay=false;
+    wboson = wbosons[1];
+    do{
+      for(unsigned int i=0; i<wboson->nChildren();i++) {
+        selfDecay=false;
+        const xAOD::TruthParticle* child = wboson->child(i);
+        if( child->pdgId()==wboson->pdgId() ){
+          wboson = child;
+          selfDecay = true;
+          break;
+        }
+        else if ( child->isChLepton() ) {
+          wlepton = child;
+          wleptons[1] = wlepton;
+        }
+        else if ( child->isNeutrino() ) {
+          wneutrino = child;
+          wneutrinos[1] = wneutrino;
+        }
+      }
+    } while(selfDecay);
+  }
+
+  // Make sure the leptons exist
+  if(wleptons[0] == nullptr || wleptons[1] == nullptr || wneutrinos[0] == nullptr || wneutrinos[1] == nullptr) {
+    return EL::StatusCode::SUCCESS; 
+  }
+
+  for(unsigned int ipar=0; ipar<2; ipar++) {
+    wPt[ipar]                     = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).Pt();
+    wMass[ipar]                   = (wleptons[ipar]->p4() + wneutrinos[ipar]->p4()).M();
+  }
+
+  ////////////////////////////
+  ////////////////////////////
   if(isSignal) {
 
     // Loop over truth particles to find the stop
@@ -634,7 +717,7 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   for(const auto& truthEl : *truthElectrons) {
     if( truthEl->absPdgId() != 11    ) continue; // only electrons
     if( truthEl->status() != 1       ) continue; // only final state objects
-    if( truthEl->pt()*MEVtoGEV < 15. ) continue; // pT > 15 GeV
+    if( truthEl->pt()*MEVtoGEV < 10. ) continue; // pT > 10 GeV
     if( fabs(truthEl->eta()) > 2.8   ) continue; // |eta| < 2.5
 
     electrons->push_back(truthEl); // store if passed all
@@ -643,7 +726,7 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   for(const auto& truthMu : *truthMuons) {
     if( truthMu->absPdgId() != 13    ) continue; // only muons
     if( truthMu->status() != 1       ) continue; // only final state objects
-    if( truthMu->pt()*MEVtoGEV < 15. ) continue; // pT > 15 GeV
+    if( truthMu->pt()*MEVtoGEV < 10. ) continue; // pT > 10 GeV
     if( fabs(truthMu->eta()) > 2.8   ) continue; // |eta| < 2.5
    
     muons->push_back(truthMu); // store if passed all
