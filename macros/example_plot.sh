@@ -1,10 +1,19 @@
 #!/bin/bash
 
-var="truth_wmass"
-var="${var},mT2ll"
+var="mDRll"
+var="${var},RPT"
+var="${var},gamInvRp1"
+var="${var},DPB_vSS"
+var="${var},cosTheta_b"
 
-python make_plots.py -i "MG5Py8_WpWm_Nominal,MG5Py8_WpWm_Up1Sigma,MG5Py8_WpWm_Dn1Sigma" -v "${var}" -r "VR_STOP2L_INC" -f "eps" -l 35000 -b -a -L; 
+#python make_plots.py -i "Sherpa_221_llvv,Sherpa_221_llvv" -v "${var}" -r "VR_STOP2L_INC" -f "eps" -l 35000 -b -a -L; 
+python make_plots.py -i "Sherpa_221_llvv" -w "0,5,9,8,6" -v "${var}" -r "ST2L_incVV_SF,ST2L_incVV_DF" -f "eps" -l 35000 -b -a -L; 
 
+#var="truth_wmass"
+#var="${var},mT2ll"
+#
+#python make_plots.py -i "MG5Py8_WpWm_Nominal,MG5Py8_WpWm_Up1Sigma,MG5Py8_WpWm_Dn1Sigma" -v "${var}" -r "VR_STOP2L_INC" -f "eps" -l 35000 -b -a -L; 
+#
 #var="bjet_n"
 ##var="${var},c_bjet_n"
 #var="${var},mDRll"

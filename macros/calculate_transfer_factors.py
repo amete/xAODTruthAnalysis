@@ -20,7 +20,14 @@ def main():
     ROOT.gROOT.SetBatch(True)
 
     # Do the internal setup
-    if options.process == "DB_DF":
+    if options.process == "DB_DF_MORIOND17":
+        options.inputname  = "Sherpa_221_llvv"                          # Samples to be used
+        options.weights    = "0,5,9,8,6"                                # Combination : first one is nominal
+        options.grouping   = "NONE"                                     # Combination : first one is nominal
+        options.varname    = "r1"                                       # Dummy variable
+        options.regionname = "SR_DF,CR_DF"                              # 0 is SR 1 is CR
+        options.luminosity = 35000.0                                    # Luminosity should cancel in the calculation
+    elif options.process == "DB_DF":
         #options.inputname  = "Sherpa_lvlv,Powheg_WWlvlv,Powheg_ZZllvv"  # Samples to be used
         #options.grouping   = "0,1+2"                                    # Combination : first one is nominal
         options.inputname  = "Sherpa_lvlv,Sherpa_lvlv_fac4,Sherpa_lvlv_fac025,Sherpa_lvlv_renorm4,Sherpa_lvlv_renorm025,Sherpa_lvlv_qsf4,Sherpa_lvlv_qsf025"  # Samples to be used
@@ -74,7 +81,7 @@ def main():
     files=getROOTFiles(options)
 
     # Read the sum of weights
-    sumw=getSumOfWeights(files) 
+    sumw=getSumOfWeights(files,options) 
 
     # Fill Histograms
     histograms=fillHistograms(files,options) # [sample][region][variable]
@@ -83,7 +90,10 @@ def main():
     inputFileList=options.inputname.split(",")
     groupList=options.grouping.split(",")
     if options.grouping == "NONE":           # Regions  = SR : 0, CR : 1                   
-        groupList=inputFileList              # Variable = 0
+        if options.weights == "NONE":
+            groupList=inputFileList          # Variable = 0
+        else:
+            groupList=options.weights.split(",")
         histogramsGrouped=histograms         # For sample i, the TF = [i][0][0]/[i][1][0]
     else:
         histogramsGrouped=groupHistograms(histograms,options)
@@ -91,7 +101,11 @@ def main():
     # Loop over samples 
     transfer_factors=[0 for x in range(len(groupList))] 
     print("")
-    for ii,inputFile in enumerate(groupList):
+    for ii,inputItem in enumerate(groupList):
+        if options.weights == "NONE":
+            inputFile = inputFileList[ii] 
+        else:
+            inputFile = inputFileList[0] 
         signal_region_unc       = ROOT.Double(0.) 
         signal_region_count     = histogramsGrouped[ii][0][0].IntegralAndError(0,-1,signal_region_unc)
         signal_region_unc_perc  = (signal_region_unc/signal_region_count)*100 if signal_region_unc !=0 else 0. 
