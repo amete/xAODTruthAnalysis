@@ -183,7 +183,7 @@ def getXtitle(variable):
         "mT2ll"           : "m_{T2}(ll) [GeV]",
         "ptll"            : "p_{T}(ll) [GeV]",
         "mll"             : "m(ll) [GeV]",
-        "mDRll"           : "E_{V}^{P} [GeV]",
+        "mDRll"           : "m_{#Delta R} [GeV]", #"E_{V}^{P} [GeV]",
         "RPT"             : "R_{PT}",
         "gamInvRp1"       : "1/#gamma_{P}^{PP}",
         "DPB_vSS"         : "#Delta#phi(#beta_{PP}^{LAB},p_{V}^{PP})",
@@ -297,7 +297,7 @@ def getRegionTCut(region):
         "VR_SF_INC"     : "isSF && lepton_pt[0]>20. && lepton_pt[1]>20. && mll>20. && (lepton_type[0]==2||lepton_type[0]==6) && (lepton_type[1]==2||lepton_type[1]==6)",
         #"VR_STOP_INC"  : "(@nonbjet_pt.size()==0 || (@nonbjet_pt.size()==1 && nonbjet_pt[0] < 200. && nonbjet_pt[0] > 50.)) && lepton_pt[0]>20. && lepton_pt[1]>20. && (lepton_type[0]==2||lepton_type[0]==6) && (lepton_type[1]==2||lepton_type[1]==6) ",
         "VR_STOP_NOHISR": "isNOHISR && (lepton_type[0]==2||lepton_type[0]==6) && (lepton_type[1]==2||lepton_type[1]==6) ",
-        "VR_STOP2L_INC" : "isOS && lepton_pt[0]>10. && lepton_pt[1]>10. && (lepton_type[0]==2||lepton_type[0]==6) && (lepton_type[1]==2||lepton_type[1]==6)",
+        "VR_STOP2L_INC" : "isOS && lepton_pt[0]>25. && lepton_pt[1]>20. && (lepton_type[0]==2||lepton_type[0]==6) && (lepton_type[1]==2||lepton_type[1]==6)",
         "VR_SUSY_LEP"   : "@lepton_pt.size()==3"
     }.get(region,"1") # 1 is default if region is not found
 
@@ -321,10 +321,10 @@ def getBinInformation(variable):
         "jet_eta"       : [ 10,-5,5],
         "lepton_phi"    : [70,-3.5,3.5],
         "jet_phi"       : [ 7,-3.5,3.5],
-        "mT2ll"         : [[0,10,20,30,40,50,60,70,80,100,120,150,200,300,500]],
+        "mT2ll"         : [ 30, 0, 300], #[[0,10,20,30,40,50,60,70,80,100,120,150,200,300,500]],
         "ptll"          : [ 40, 0, 400], 
         "mll"           : [ 40, 0, 400], #[[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,400,500,1000]],
-        "mDRll"         : [[0,10,20,30,40,50,60,70,80,95,110,200]],
+        "mDRll"         : [ 30, 0, 300], #[[0,10,20,30,40,50,60,70,80,95,110,200]],
         "RPT"           : [ 10, 0, 1],
         "gamInvRp1"     : [ 10, 0, 1],
         "cosTheta_b"    : [ 10, -1, 1],
@@ -370,45 +370,74 @@ def getROOTFiles(options):
     return files
 
 # Get sum of weights
-def getSumOfWeights(files,weight=1): # weight=1 is nominal weight
-    sumw=[0 for x in range(len(files))]
-    for ii,iiFile in enumerate(files):
-        sumw[ii] = iiFile.Get("CutflowWeighted").GetBinContent(weight)
+def getSumOfWeights(files,options,weight=0): # weight=0 is nominal weight
+    if options.weights == "NONE":
+        sumw=[0 for x in range(len(files))]
+        for ii,iiFile in enumerate(files):
+            sumw[ii] = iiFile.Get("CutflowWeighted").GetBinContent(weight+1)
+    else:
+        sumw=[0 for x in range(len(options.weights.split(",")))]
+        for ii,inputweight in enumerate(options.weights.split(",")):
+            binValue = int(inputweight)+1
+            sumw[ii] = files[0].Get("CutflowWeighted").GetBinContent(binValue)
     return sumw
 
 # Set colors
-def setColors(files):
-    colors=[0 for x in range(len(files))] 
-    for ii,iiFile in enumerate(files):
-        if ii == 0:   colors[ii] = ROOT.kBlack 
-        elif ii == 1: colors[ii] = ROOT.kSpring-1 
-        elif ii == 2: colors[ii] = ROOT.kMagenta 
-        elif ii == 3: colors[ii] = ROOT.kAzure-3
-        elif ii == 4: colors[ii] = ROOT.kCyan-3 
-        elif ii == 5: colors[ii] = ROOT.kOrange+1 
-        elif ii == 6: colors[ii] = ROOT.kYellow+1 
-        elif ii == 7: colors[ii] = ROOT.kRed
-        elif ii == 8: colors[ii] = ROOT.kSpring+3
+def setColors():
+    #colors=[0 for x in range(len(files))] 
+    #for ii,iiFile in enumerate(files):
+    #    if ii == 0:   colors[ii] = ROOT.kBlack 
+    #    elif ii == 1: colors[ii] = ROOT.kSpring-1 
+    #    elif ii == 2: colors[ii] = ROOT.kMagenta 
+    #    elif ii == 3: colors[ii] = ROOT.kAzure-3
+    #    elif ii == 4: colors[ii] = ROOT.kCyan-3 
+    #    elif ii == 5: colors[ii] = ROOT.kOrange+1 
+    #    elif ii == 6: colors[ii] = ROOT.kYellow+1 
+    #    elif ii == 7: colors[ii] = ROOT.kRed
+    #    elif ii == 8: colors[ii] = ROOT.kSpring+3
+    colors=[0 for x in range(9)]
+    colors[0] = ROOT.kBlack 
+    colors[1] = ROOT.kSpring-1 
+    colors[2] = ROOT.kMagenta 
+    colors[3] = ROOT.kAzure-3
+    colors[4] = ROOT.kCyan-3 
+    colors[5] = ROOT.kOrange+1 
+    colors[6] = ROOT.kYellow+1 
+    colors[7] = ROOT.kRed
+    colors[8] = ROOT.kSpring+3
     return colors
 
 # Fill histograms
-def fillHistograms(files,options,weight=1):
+def fillHistograms(files,options):
 
-    inputFileList=options.inputname.split(",")
+    if options.weights == "NONE":
+        inputList=options.inputname.split(",")
+    else:
+        inputList=options.weights.split(",")
+
+    inputFileList=options.inputname.split(",") 
     variableList=options.varname.split(",") 
     regionList=options.regionname.split(",")
 
-    # Read the sum of weights
-    sumw=getSumOfWeights(files,weight) 
+    histograms=[[[0 for x in range(len(variableList))] for x in range(len(regionList))] for x in range(len(inputList))]
 
-    histograms=[[[0 for x in range(len(variableList))] for x in range(len(regionList))] for x in range(len(inputFileList))]
-
-    for ii,inputFile in enumerate(inputFileList):
+    for ii,inputItem in enumerate(inputList):
         # Find the tree 
-        currentROOTTree = files[ii].Get("SuperTruth")
+        if options.weights == "NONE":
+            currentROOTTree = files[ii].Get("SuperTruth")
+            inputFile=inputFileList[ii]
+            weight=0
+        else:
+            currentROOTTree = files[0].Get("SuperTruth")
+            inputFile=inputFileList[0]
+            weight=int(inputItem)
         if not currentROOTTree:
             print("WARNING :: Cannot find ROOT tree in the file %s"%inputFile)
             continue
+
+        # Get sum of weights
+        sumw=getSumOfWeights(files,options,weight) 
+
         # Loop over regions 
         for jj,region in enumerate(regionList):
             # Get the TCut for the region 
@@ -500,6 +529,11 @@ def addOverFlowToLastBin(histo):
     histo.SetBinContent(lastBin,lastBinValue+overFlowValue);
     histo.SetBinError(lastBin,math.sqrt(lastBinError*lastBinError+overFlowError*overFlowError));
 
+# Delete errors
+def removeBinErrorsY(histo):
+    for ii in range(histo.GetXaxis().GetNbins()+1):
+        histo.SetBinError(ii,0)
+
 # Group histograms
 def groupHistograms(histograms,options):
     if options.grouping == "NONE":
@@ -527,3 +561,20 @@ def groupHistograms(histograms,options):
                         histogramsGrouped[aa][jj][kk].Add(histograms[int(ii)][jj][kk]) 
    
     return histogramsGrouped 
+
+# Legend Suffix
+def legendSuffix(weight):
+    suffix = ""
+    if weight == "0":
+        suffix="nom"
+    elif weight == "6":
+        suffix="fac_dn"
+    elif weight == "8":
+        suffix="fac_up"
+    elif weight == "5":
+        suffix="ren_dn"
+    elif weight == "9":
+        suffix="ren_up"
+    else:
+        suffix="unknown"
+    return suffix

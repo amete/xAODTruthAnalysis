@@ -11,6 +11,8 @@ def main():
                       help="input ROOT file (if multiple comma seperated)", metavar="FILE", default="Sherpa_lvlv")
     parser.add_option("-g", "--grouping", action="store", type="string", dest="grouping",
                       help="grouping the inputs (format: 0,1+2,3+4...)", metavar="GROUPING", default="NONE")
+    parser.add_option("-w", "--weights", action="store", type="string", dest="weights",
+                      help="use weight variations (format: 0,1,2...)", metavar="WEIGHTS", default="NONE")
     parser.add_option("-v", "--variable", action="store", type="string", dest="varname",
                       help="variable to plot (if multiple comma seperated)", metavar="VARIABLE", default="lepton_pt[0]")
     parser.add_option("-r", "--region", action="store", type="string", dest="regionname",
@@ -41,7 +43,7 @@ def main():
     files=getROOTFiles(options)
 
     # Set colors
-    colors=setColors(files)     
+    colors=setColors()#(files)     
 
     # Fill Histograms
     histograms=fillHistograms(files,options)
@@ -57,7 +59,10 @@ def main():
 
     # Group the histograms
     if options.grouping == "NONE":
-        groupList=inputFileList
+        if options.weights == "NONE":
+            groupList=inputFileList
+        else:
+            groupList=options.weights.split(",")
         histogramsGrouped=histograms
     else:
         histogramsGrouped=groupHistograms(histograms,options)
@@ -95,10 +100,18 @@ def main():
                 dummyHisto.Draw()
                 topPad.cd()
             ## Loop over files 
-            for kk,inputFile in enumerate(groupList):
+            for kk,inputItem in enumerate(groupList):
+                # Find the tree 
+                if options.weights == "NONE":
+                    inputFile=inputFileList[ii]
+                else:
+                    inputFile=inputFileList[0]
                 # Fill the legend
                 if ii == 0 and jj == 0:
-                    legend.AddEntry(histogramsGrouped[kk][ii][jj],inputFile,"l")
+                    if options.weights == "NONE":
+                        legend.AddEntry(histogramsGrouped[kk][ii][jj],inputItem,"l")
+                    else:
+                        legend.AddEntry(histogramsGrouped[kk][ii][jj],inputFileList[ii]+"_"+legendSuffix(inputItem),"l")
                     #if "0" in inputFile:
                     #    legend.AddEntry(histogramsGrouped[kk][ii][jj],inputFile.replace("0","Sherpa_lvlv"),"l")
                     #elif "1+2" in inputFile:
@@ -107,7 +120,7 @@ def main():
                     #    legend.AddEntry(histogramsGrouped[kk][ii][jj],inputFile,"l")
                 # Histograms are scaled in fillHistograms
                 # but here we can scale them to unity to check the shapes
-                scaleToUnity(histogramsGrouped[kk][ii][jj]) 
+                #scaleToUnity(histogramsGrouped[kk][ii][jj]) 
                 # Add the overflow to last bin before plotting
                 addOverFlowToLastBin(histogramsGrouped[kk][ii][jj]) 
                 # Draw onto canvas
@@ -122,19 +135,24 @@ def main():
                 histogramsGrouped[kk][ii][jj].GetXaxis().SetTitleOffset(1.3)
                 if options.ratio:
                     histogramsGrouped[kk][ii][jj].GetXaxis().SetLabelOffset(10)
-                #histogramsGrouped[kk][ii][jj].GetYaxis().SetTitle("Events")
-                histogramsGrouped[kk][ii][jj].GetYaxis().SetTitle("arb. units")
+                histogramsGrouped[kk][ii][jj].GetYaxis().SetTitle("Events")
+                #histogramsGrouped[kk][ii][jj].GetYaxis().SetTitle("arb. units")
                 histogramsGrouped[kk][ii][jj].GetYaxis().SetTitleOffset(1.3)
                 if options.log:
-                    #histogramsGrouped[kk][ii][jj].GetYaxis().SetRangeUser(1.e-2,1.e2*pow(10,math.ceil(math.log(histogramsGrouped[kk][ii][jj].GetMaximum())/math.log(10))))
-                    histogramsGrouped[kk][ii][jj].GetYaxis().SetRangeUser(1.e-5,1.e2*pow(10,math.ceil(math.log(histogramsGrouped[kk][ii][jj].GetMaximum())/math.log(10))))
+                    histogramsGrouped[kk][ii][jj].GetYaxis().SetRangeUser(1.e-2,1.e2*pow(10,math.ceil(math.log(histogramsGrouped[kk][ii][jj].GetMaximum())/math.log(10))))
+                    #histogramsGrouped[kk][ii][jj].GetYaxis().SetRangeUser(1.e-5,1.e2*pow(10,math.ceil(math.log(histogramsGrouped[kk][ii][jj].GetMaximum())/math.log(10))))
                 else:
                     histogramsGrouped[kk][ii][jj].GetYaxis().SetRangeUser(0.,1.75*histogramsGrouped[kk][ii][jj].GetMaximum())
                 # Calculate the ratio
                 if not options.ratio or kk==0: # 0 is assumed to be the denominator
                     continue
                 numerator   = ROOT.TH1TOTGraph(histogramsGrouped[kk][ii][jj])
-                denominator = ROOT.TH1TOTGraph(histogramsGrouped[0][ii][jj])
+                if options.weights == "NONE":
+                    denominator = ROOT.TH1TOTGraph(histogramsGrouped[0][ii][jj])
+                else:
+                    histoLocal  = histogramsGrouped[0][ii][jj].Clone()
+                    removeBinErrorsY(histoLocal)
+                    denominator = ROOT.TH1TOTGraph(histoLocal)
                 ratios[kk][ii][jj] = ROOT.myTGraphErrorsDivide(numerator,denominator)
                 ratios[kk][ii][jj].SetLineColor(colors[kk])
                 ratios[kk][ii][jj].SetMarkerColor(colors[kk])
@@ -145,9 +163,9 @@ def main():
             # Draw the legend and decorations
             legend.Draw()
             ROOT.myText(0.20,0.88,ROOT.kBlack,"#bf{ATLAS} Internal")
-            #ROOT.myText(0.20,0.83,ROOT.kBlack,("%.2f fb^{-1} #sqrt{s} = 13 TeV"% (options.luminosity*1.e-3)))
-            #ROOT.myText(0.20,0.78,ROOT.kBlack,("#sqrt{s} = 13 TeV"))
-            ROOT.myText(0.20,0.83,ROOT.kBlack,("#sqrt{s} = 13 TeV"))
+            ROOT.myText(0.20,0.83,ROOT.kBlack,("%.2f fb^{-1} #sqrt{s} = 13 TeV"% (options.luminosity*1.e-3)))
+            ROOT.myText(0.20,0.78,ROOT.kBlack,("#sqrt{s} = 13 TeV"))
+            #ROOT.myText(0.20,0.83,ROOT.kBlack,("#sqrt{s} = 13 TeV"))
             ROOT.myText(0.55,0.88,ROOT.kBlack,("Region : %s"% (region)))
             ROOT.gPad.SetLogy(options.log)
             # Save canvas
@@ -166,6 +184,7 @@ def print_userinput(options):
     print(" Flags:\n")
     print("   Input ROOT file(s) is(are)        %s " % (options.inputname) )
     print("   Grouping is                       %s " % (options.grouping)  )
+    print("   Weights are                       %s " % (options.weights)   )
     print("   Variable(s) to be plotted is(are) %s " % (options.varname)   )
     print("   Region(s) to be plotted is(are)   %s " % (options.regionname))
     print("   Luminosity for normalization      %f " % (options.luminosity))
