@@ -9,6 +9,8 @@ def main():
     parser = OptionParser()
     parser.add_option("-p", "--process", action="store", type="string", dest="process",
                       help="process for the TF calculation (Top,WW etc.)", metavar="PROC", default="WW")
+    parser.add_option("-w", "--weights", action="store", type="string", dest="weights",
+                      help="use weight variations (format: 0,1,2...)", metavar="WEIGHTS", default="NONE")
     parser.add_option("-d", "--debug", action="store_true", dest="debug", default=False,
                       help="pring debug information")
     (options, args) = parser.parse_args()
@@ -20,14 +22,7 @@ def main():
     ROOT.gROOT.SetBatch(True)
 
     # Do the internal setup
-    if options.process == "DB_DF_MORIOND17":
-        options.inputname  = "Sherpa_221_llvv"                          # Samples to be used
-        options.weights    = "0,5,9,8,6"                                # Combination : first one is nominal
-        options.grouping   = "NONE"                                     # Combination : first one is nominal
-        options.varname    = "r1"                                       # Dummy variable
-        options.regionname = "SR_DF,CR_DF"                              # 0 is SR 1 is CR
-        options.luminosity = 35000.0                                    # Luminosity should cancel in the calculation
-    elif options.process == "DB_DF":
+    if options.process == "DB_DF":
         #options.inputname  = "Sherpa_lvlv,Powheg_WWlvlv,Powheg_ZZllvv"  # Samples to be used
         #options.grouping   = "0,1+2"                                    # Combination : first one is nominal
         options.inputname  = "Sherpa_lvlv,Sherpa_lvlv_fac4,Sherpa_lvlv_fac025,Sherpa_lvlv_renorm4,Sherpa_lvlv_renorm025,Sherpa_lvlv_qsf4,Sherpa_lvlv_qsf025"  # Samples to be used
@@ -73,6 +68,29 @@ def main():
         options.varname    = "mDRll"                                    # Dummy variable
         options.regionname = "ST2L_incVV_DF,ST2L_CR_VV_DF"              # 0 is SR 1 is CR
         options.luminosity = 3210.000                                   # Luminosity should cancel in the calculation
+    elif options.process == "ST2L_VV_SRSF_MORIOND17":
+        options.inputname  = "Sherpa_221_llvv"                          # Samples to be used
+        if options.weights == "NONE":
+            options.weights    = "0,5,9,8,6"                                # Combination : first one is nominal
+        options.grouping   = "NONE"                                     # Combination : first one is nominal
+        options.varname    = "mDRll"                                    # Dummy variable
+        options.regionname = "ST2L_SR_SF_model,ST2L_CR_VV_SF"             # 0 is SR 1 is CR
+        options.luminosity = 35000.0                                    # Luminosity should cancel in the calculation
+    elif options.process == "ST2L_VV_SRDF_MORIOND17":
+        options.inputname  = "Sherpa_221_llvv"                          # Samples to be used
+        if options.weights == "NONE":
+            options.weights    = "0,5,9,8,6"                                # Combination : first one is nominal
+        options.grouping   = "NONE"                                     # Combination : first one is nominal
+        options.varname    = "mDRll"                                     # Dummy variable
+        options.regionname = "ST2L_SR_DF_model,ST2L_CR_VV_DF"             # 0 is SR 1 is CR
+        options.luminosity = 35000.0                                    # Luminosity should cancel in the calculation
+    elif options.process == "ST2L_TT_SRALL_MORIOND17":
+        options.inputname  = "PowhegPy_ttbar,PowhegHpp_ttbar,aMCatNLOHpp_ttbar,Sherpa_dilep_ttbar"        # Samples to be used, first one is nominal
+        #options.inputname  = "PowhegPy_ttbar,PowhegPy_ttbar_radHi,PowhegPy_ttbar_radLo,PowhegHpp_ttbar,aMCatNLOHpp_ttbar,Sherpa_dilep_ttbar"        # Samples to be used, first one is nominal
+        options.grouping   = "NONE"                                     # Combination : first one is nominal
+        options.varname    = "mDRll"                                    # Dummy variable
+        options.regionname = "ST2L_incTT_ALL,ST2L_CR_Top"               # 0 is SR 1 is CR
+        options.luminosity = 35000.0                                   # Luminosity should cancel in the calculation
     else:
         print("ERROR :: Unknown process %s, quitting..." %(options.process))
         return
@@ -113,7 +131,7 @@ def main():
         control_region_count    = histogramsGrouped[ii][1][0].IntegralAndError(0,-1,control_region_unc)
         control_region_unc_perc = (control_region_unc/control_region_count)*100 if control_region_count !=0 else 0.
         transfer_factors[ii] = signal_region_count/control_region_count 
-        if groupList[ii] != "Powheg_ttbar_radHi" and groupList[ii] != "Powheg_ttbar_radLo":       
+        if groupList[ii] != "PowhegPy_ttbar_radHi" and groupList[ii] != "PowhegPy_ttbar_radLo" and groupList[ii] != "PowhegPy_dilep_ttbar" and groupList[ii] != "aMCatNLOHpp_ttbar":       
             print("Sample %s \t\t (%.2f fb-1) SR count %.2f +/- %.2f (%3.2f%%) CR count %.2f +/- %.2f (%3.2f%%) TF is %.2e"
                 %(groupList[ii]         ,options.luminosity*1.e-3,
                       signal_region_count   ,signal_region_unc, signal_region_unc_perc, 

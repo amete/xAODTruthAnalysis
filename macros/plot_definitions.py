@@ -4,139 +4,153 @@ import ROOT,math,array
 def getROOTFileName(filename):
     return {
         # Moriond Samples :: BEGIN
-        "Sherpa_221_llvv"         : "/tmp/amete/local_truth_analysis_test/test_1/data-myOutput/DAOD_TRUTH1.09451524._000030.pool.root.1.root",
+        "Sherpa_221_llvv"         : "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/combined_2/mc15_13TeV.363492.Sherpa_221_NNPDF30NNLO_llvv.merge.NTUP_FLAT.e5332_p2768.root",
+        "PowhegPy_ttbar"          : "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/combined_3/mc15_13TeV.410000.PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_nonallhad.merge.NTUP_FLAT.e3698_p2949.root",
+        "PowhegPy_ttbar_radHi"    : "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/combined_2/mc15_13TeV.410001.PowhegPythiaEvtGen_P2012radHi_ttbar_hdamp345_down_nonallhad.merge.NTUP_FLAT.e3783_p2949_v1.root",
+        "PowhegPy_ttbar_radLo"    : "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/combined_2/mc15_13TeV.410002.PowhegPythiaEvtGen_P2012radLo_ttbar_hdamp172_up_nonallhad.merge.NTUP_FLAT.e3783_p2949_v1.root",
+        "aMCatNLOHpp_ttbar"       : "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/combined_3/mc15_13TeV.410003.aMcAtNloHerwigppEvtGen_ttbar_nonallhad.merge.NTUP_FLAT.e4441_p2949.root",
+        "PowhegHpp_ttbar"         : "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/combined_3/mc15_13TeV.410004.PowhegHerwigppEvtGen_UEEE5_ttbar_hdamp172p5_nonallhad.merge.NTUP_FLAT.e3836_p2949.root",
+        "PowhegPy_dilep_ttbar"    : "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/combined_2/mc15_13TeV.410009.PowhegPythiaEvtGen_P2012_ttbar_hdamp172p5_dil.merge.NTUP_FLAT.e4511_p2949.root",
+        "Sherpa_dilep_ttbar"      : "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/combined_3/mc15_13TeV.410189.Sherpa_NNPDF30NNLO_ttbar_dilepton_MEPS_NLO.merge.NTUP_FLAT.e4714_p2949.root",
         # Moriond Samples :: END
-        "Sherpa_lvlv"             : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_361068.root",
-        "Sherpa_lvlv_fac4"        : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363072.root",
-        "Sherpa_lvlv_fac025"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363073.root",
-        "Sherpa_lvlv_renorm4"     : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363074.root",
-        "Sherpa_lvlv_renorm025"   : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363075.root",
-        "Sherpa_lvlv_qsf4"        : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363076.root",
-        "Sherpa_lvlv_qsf025"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363077.root",
-        "Sherpa_lvlv_ckkw15"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363299.root",
-        "Sherpa_lvlv_ckkw30"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363300.root",
-        "Powheg_WWlvlv"           : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_361600.root",
-        "Powheg_ZZllvv"           : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_361604.root",
-        "Powheg_ttbar"            : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410000.root",
-        "Powheg_ttbar_radHi"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410001.root",
-        "Powheg_ttbar_radLo"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410002.root",
-        "aMCatNLO_ttbar"          : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410003.root",
-        "aMCatNLOPy8_ttbar"       : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410159.root",
-        "PowhegHpp_ttbar"         : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410004.root",
-        "Sherpa_ttbar_410021"     : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410021.root",
-        "Sherpa_ttbar_410189"     : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410189.root",
-        #"Herwigpp_300vs180"       : "/gdata/atlas/amete/StopPolarization/outputs/FlatNtuples/Herwigpp.300vs180.truth1_v3.root",
-        #"Madgraph_300vs180"       : "/gdata/atlas/amete/StopPolarization/outputs/FlatNtuples/Madgraph.300vs180.truth1_v3.root",
-        #"MadgraphR_300vs180"      : "/gdata/atlas/amete/StopPolarization/outputs/FlatNtuples/MadgraphR.300vs180.truth1_v3.root",
-        #"MadgraphL_300vs180"      : "/gdata/atlas/amete/StopPolarization/outputs/FlatNtuples/MadgraphL.300vs180.truth1_v3.root",
-        "Herwigpp_250vs160"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_406009.HppEG_UE5C6L1_Tt_bWN_t250_n160_2Lep18.root",
-        "HerwigppL_250vs160"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_999999.HppEG_UE5C6L1_Tt_bWN_t250_n160_2Lep18.root",
-        "Madgraph_250vs160"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387943.MGPy8EG_A14N23LO_TT_bWN_250_160_2L15.root",
-        "MadgraphL_250vs160"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387943.MGPy8EG_A14N23LO_TT_bWN_250_160_2L15.root",
-        "MadgraphR_250vs160"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387943.MGPy8EG_A14N23LO_TT_bWN_250_160_2L15.root",
-        "Herwigpp_300vs150"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_406010.HppEG_UE5C6L1_Tt_bWN_t300_n150_2Lep18.root",
-        "Madgraph_300vs150"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387947.MGPy8EG_A14N23LO_TT_bWN_300_150_2L15.root",
-        "MadgraphR_300vs150"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387947.MGPy8EG_A14N23LO_TT_bWN_300_150_2L15.root",
-        "HerwigppR_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_406011.HppEG_UE5C6L1_Tt_bWN_t300_n180_2Lep18.root",
-        "HerwigppL_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_999998.HppEG_UE5C6L1_Tt_bWN_t300_n180_2Lep18.root",
-        "Madgraph_300vs180"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387948.MGPy8EG_A14N23LO_TT_bWN_300_180_2L15.root",
-        "MadgraphM_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387948.MGPy8EG_A14N23LO_TT_bWN_300_180_2L15.root",
-        "MadgraphR_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387948.MGPy8EG_A14N23LO_TT_bWN_300_180_2L15.root",
-        "MadgraphL_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387948.MGPy8EG_A14N23LO_TT_bWN_300_180_2L15.root",
-        "MadgraphFR_300vs180"     : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_123457.MGPy8EG_A14N_TTright_bWN_300_180_2Lep18.root",
-        "MadgraphT_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_123458.MGPy8EG_A14N_TTright_bWN_300_180_2Lep18.root",
-        "MadgraphFL_250vs125"     : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999927.MGPy8EG_A14N23LO_TT_directBWNleft_250_125.root",
-        "MadgraphL_250vs125"      : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999929.MGPy8EG_A14N23LO_TT_directBWN_250_125.root",
-        "MadgraphM_250vs125"      : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999929.MGPy8EG_A14N23LO_TT_directBWN_250_125.root",
-        "MadgraphR_250vs125"      : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999929.MGPy8EG_A14N23LO_TT_directBWN_250_125.root",
-        "Madgraph_250vs125"       : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999929.MGPy8EG_A14N23LO_TT_directBWN_250_125.root",
-        "HerwigppL_250vs125"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_999997.HppEG_UE5C6L1_Tt_bWN_t250_n125_2Lep18.root",
-        "SerhanFL_250vs125"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_123460.MGPy8EG_A14N_TTleft_bWN_250_125_2Lep18.root",
-        "SerhanFR_250vs125"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_123461.MGPy8EG_A14N_TTright_bWN_250_125_2Lep18.root",
-        #"MadgraphSlep_100vs1"     : "/gdata/atlas/amete/MC15_SleptonPairProduction/FLAT/DAOD_TRUTH1.MGPy8EG_A14N23LO_SlepSlep_direct_100p0_1p0_2L5_10k.pool.root",
-        "MadgraphSlep_100vs1"     : "/data/uclhc/uci/user/amete/slepton_signal_flat/DAOD_TRUTH1.MGPy8EG_A14N23LO_SlepSlep_direct_100p0_1p0_2L5_10k.pool.root",
-        "MadgraphFM_350vs270"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/FullME/data-myOutput/sample.root",
-        "MadSpin_350vs270"        : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/MadSpin/data-myOutput/user.amete.9502993.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
-        "Marilea_350vs270"        : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/Marilea/data-myOutput/DAOD_TRUTH1.TestJob_999999_350_270_MADSPIN_newrel.pool.root.root",
-        "Pythia_350vs270"         : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/Pythia/data-myOutput/user.amete.9506931.EXT0._000002.DAOD_TRUTH1.output.pool.root.root",
-        "MadGraphFM_350vs230"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/FullME/data-myOutput/output.root",
-        ##"MadSpinBW15_350vs230"   : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW15/data-myOutput/user.amete.9683648.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
-        #"MadSpinBWN_350vs230"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW15/data-myOutput/user.amete.9683648.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
-        #"MadSpinBW100_350vs230"   : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW100/data-myOutput/user.amete.9683651.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
-        #"MadSpinBW1000_350vs230"  : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW1000/data-myOutput/user.amete.9683654.EXT0._000002.DAOD_TRUTH1.output.pool.root.root",
-        "MadSpinBWN_350vs230"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW15/data-myOutput/user.amete.9788622.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
-        "MadSpinBFFN_350vs230"    : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBFFN/data-myOutput/user.amete.9733327.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
-        "MadSpinBFFNv2_350vs230"  : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBFFNv2/data-myOutput/user.amete.9748239.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
-        "MG5Py8_WpWm_Nominal"  : "/tmp/amete/WWIDTH/nominal.root",
-        "MG5Py8_WpWm_Up1Sigma" : "/tmp/amete/WWIDTH/up1sigma.root",
-        "MG5Py8_WpWm_Dn1Sigma" : "/tmp/amete/WWIDTH/dn1sigma.root",
+        ##"Sherpa_lvlv"             : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_361068.root",
+        ##"Sherpa_lvlv_fac4"        : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363072.root",
+        ##"Sherpa_lvlv_fac025"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363073.root",
+        ##"Sherpa_lvlv_renorm4"     : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363074.root",
+        ##"Sherpa_lvlv_renorm025"   : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363075.root",
+        ##"Sherpa_lvlv_qsf4"        : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363076.root",
+        ##"Sherpa_lvlv_qsf025"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363077.root",
+        ##"Sherpa_lvlv_ckkw15"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363299.root",
+        ##"Sherpa_lvlv_ckkw30"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_363300.root",
+        ##"Powheg_WWlvlv"           : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_361600.root",
+        ##"Powheg_ZZllvv"           : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_361604.root",
+        ##"Powheg_ttbar"            : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410000.root",
+        ##"Powheg_ttbar_radHi"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410001.root",
+        ##"Powheg_ttbar_radLo"      : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410002.root",
+        ##"aMCatNLO_ttbar"          : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410003.root",
+        ##"aMCatNLOPy8_ttbar"       : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410159.root",
+        ##"PowhegHpp_ttbar"         : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410004.root",
+        ##"Sherpa_ttbar_410021"     : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410021.root",
+        ##"Sherpa_ttbar_410189"     : "/data/uclhc/uci/user/amete/truth_analysis_run/combined_3/out_410189.root",
+        ###"Herwigpp_300vs180"       : "/gdata/atlas/amete/StopPolarization/outputs/FlatNtuples/Herwigpp.300vs180.truth1_v3.root",
+        ###"Madgraph_300vs180"       : "/gdata/atlas/amete/StopPolarization/outputs/FlatNtuples/Madgraph.300vs180.truth1_v3.root",
+        ###"MadgraphR_300vs180"      : "/gdata/atlas/amete/StopPolarization/outputs/FlatNtuples/MadgraphR.300vs180.truth1_v3.root",
+        ###"MadgraphL_300vs180"      : "/gdata/atlas/amete/StopPolarization/outputs/FlatNtuples/MadgraphL.300vs180.truth1_v3.root",
+        ##"Herwigpp_250vs160"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_406009.HppEG_UE5C6L1_Tt_bWN_t250_n160_2Lep18.root",
+        ##"HerwigppL_250vs160"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_999999.HppEG_UE5C6L1_Tt_bWN_t250_n160_2Lep18.root",
+        ##"Madgraph_250vs160"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387943.MGPy8EG_A14N23LO_TT_bWN_250_160_2L15.root",
+        ##"MadgraphL_250vs160"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387943.MGPy8EG_A14N23LO_TT_bWN_250_160_2L15.root",
+        ##"MadgraphR_250vs160"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387943.MGPy8EG_A14N23LO_TT_bWN_250_160_2L15.root",
+        ##"Herwigpp_300vs150"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_406010.HppEG_UE5C6L1_Tt_bWN_t300_n150_2Lep18.root",
+        ##"Madgraph_300vs150"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387947.MGPy8EG_A14N23LO_TT_bWN_300_150_2L15.root",
+        ##"MadgraphR_300vs150"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387947.MGPy8EG_A14N23LO_TT_bWN_300_150_2L15.root",
+        ##"HerwigppR_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_406011.HppEG_UE5C6L1_Tt_bWN_t300_n180_2Lep18.root",
+        ##"HerwigppL_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_999998.HppEG_UE5C6L1_Tt_bWN_t300_n180_2Lep18.root",
+        ##"Madgraph_300vs180"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387948.MGPy8EG_A14N23LO_TT_bWN_300_180_2L15.root",
+        ##"MadgraphM_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387948.MGPy8EG_A14N23LO_TT_bWN_300_180_2L15.root",
+        ##"MadgraphR_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387948.MGPy8EG_A14N23LO_TT_bWN_300_180_2L15.root",
+        ##"MadgraphL_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_387948.MGPy8EG_A14N23LO_TT_bWN_300_180_2L15.root",
+        ##"MadgraphFR_300vs180"     : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_123457.MGPy8EG_A14N_TTright_bWN_300_180_2Lep18.root",
+        ##"MadgraphT_300vs180"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_123458.MGPy8EG_A14N_TTright_bWN_300_180_2Lep18.root",
+        ##"MadgraphFL_250vs125"     : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999927.MGPy8EG_A14N23LO_TT_directBWNleft_250_125.root",
+        ##"MadgraphL_250vs125"      : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999929.MGPy8EG_A14N23LO_TT_directBWN_250_125.root",
+        ##"MadgraphM_250vs125"      : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999929.MGPy8EG_A14N23LO_TT_directBWN_250_125.root",
+        ##"MadgraphR_250vs125"      : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999929.MGPy8EG_A14N23LO_TT_directBWN_250_125.root",
+        ##"Madgraph_250vs125"       : "/data/uclhc/uci/user/amete/stop_signal_flat/takashi/FLAT_999929.MGPy8EG_A14N23LO_TT_directBWN_250_125.root",
+        ##"HerwigppL_250vs125"      : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_999997.HppEG_UE5C6L1_Tt_bWN_t250_n125_2Lep18.root",
+        ##"SerhanFL_250vs125"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_123460.MGPy8EG_A14N_TTleft_bWN_250_125_2Lep18.root",
+        ##"SerhanFR_250vs125"       : "/data/uclhc/uci/user/amete/stop_signal_flat/FLAT_123461.MGPy8EG_A14N_TTright_bWN_250_125_2Lep18.root",
+        ###"MadgraphSlep_100vs1"     : "/gdata/atlas/amete/MC15_SleptonPairProduction/FLAT/DAOD_TRUTH1.MGPy8EG_A14N23LO_SlepSlep_direct_100p0_1p0_2L5_10k.pool.root",
+        ##"MadgraphSlep_100vs1"     : "/data/uclhc/uci/user/amete/slepton_signal_flat/DAOD_TRUTH1.MGPy8EG_A14N23LO_SlepSlep_direct_100p0_1p0_2L5_10k.pool.root",
+        ##"MadgraphFM_350vs270"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/FullME/data-myOutput/sample.root",
+        ##"MadSpin_350vs270"        : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/MadSpin/data-myOutput/user.amete.9502993.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        ##"Marilea_350vs270"        : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/Marilea/data-myOutput/DAOD_TRUTH1.TestJob_999999_350_270_MADSPIN_newrel.pool.root.root",
+        ##"Pythia_350vs270"         : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_4body_study/Pythia/data-myOutput/user.amete.9506931.EXT0._000002.DAOD_TRUTH1.output.pool.root.root",
+        ##"MadGraphFM_350vs230"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/FullME/data-myOutput/output.root",
+        ####"MadSpinBW15_350vs230"   : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW15/data-myOutput/user.amete.9683648.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        ###"MadSpinBWN_350vs230"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW15/data-myOutput/user.amete.9683648.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        ###"MadSpinBW100_350vs230"   : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW100/data-myOutput/user.amete.9683651.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        ###"MadSpinBW1000_350vs230"  : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW1000/data-myOutput/user.amete.9683654.EXT0._000002.DAOD_TRUTH1.output.pool.root.root",
+        ##"MadSpinBWN_350vs230"     : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBW15/data-myOutput/user.amete.9788622.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        ##"MadSpinBFFN_350vs230"    : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBFFN/data-myOutput/user.amete.9733327.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        ##"MadSpinBFFNv2_350vs230"  : "/data/uclhc/uci/user/amete/truth_analysis_run/stop_3body_study/MadSpinBFFNv2/data-myOutput/user.amete.9748239.EXT0._000001.DAOD_TRUTH1.output.pool.root.root",
+        ##"MG5Py8_WpWm_Nominal"  : "/tmp/amete/WWIDTH/nominal.root",
+        ##"MG5Py8_WpWm_Up1Sigma" : "/tmp/amete/WWIDTH/up1sigma.root",
+        ##"MG5Py8_WpWm_Dn1Sigma" : "/tmp/amete/WWIDTH/dn1sigma.root",
     }.get(filename,"")
 
 # Define cross-sections
 def getCrossSection(filename):
     return {
         # Moriond Samples :: BEGIN
-        "Sherpa_221_llvv"        : 12.465,
-        # Moriond Samples :: END
-        "Sherpa_lvlv"            : 14.022*0.91,   # 361068 https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MC15SystematicUncertainties#VV_Diboson_V_W_Z 24/11/15
-        "Sherpa_lvlv_fac4"       : 14.022*0.91,   # 363072
-        "Sherpa_lvlv_fac025"     : 14.022*0.91,   # 363073
-        "Sherpa_lvlv_renorm4"    : 14.022*0.91,   # 363074
-        "Sherpa_lvlv_renorm025"  : 14.022*0.91,   # 363075
-        "Sherpa_lvlv_qsf4"       : 14.022*0.91,   # 363076
-        "Sherpa_lvlv_qsf025"     : 14.022*0.91,   # 363077
-        "Sherpa_lvlv_ckkw15"     : 14.022*0.91,   # 363299
-        "Sherpa_lvlv_ckkw30"     : 14.022*0.91,   # 363300
-        "Powheg_WWlvlv"          : 10.631,        # 361600
-        "Powheg_ZZllvv"          : 0.92498,       # 361604
-        "Powheg_ttbar"           : 831.76*0.543,  # 410000 => 696.11  1.1949  0.543
-        "Powheg_ttbar_radHi"     : 831.76*0.543,  # 410001 => 783.73  1.0613  0.543
-        "Powheg_ttbar_radLo"     : 831.76*0.543,  # 410002 => 611.1   1.3611  0.543
-        "aMCatNLO_ttbar"         : 831.76*0.543,  # 410003 => 694.59  1.1975  0.543
-        "aMCatNLOPy8_ttbar"      : 679.76*0.54393*1.2236,  # https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MC15TTbarSamplesPMG 8/7/2016 
-        "PowhegHpp_ttbar"        : 831.76*0.543,  # 410004 => 696.32  1.1926  0.543 
-        "Sherpa_ttbar_410021"    : 78.73*1.17,    # 410021 => 78.73   1.17    1. 
-        "Sherpa_ttbar_410189"    : 76.333*1.1484, # 410021 => https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MC15TTbarSamplesPMG 
-        "Herwigpp_250vs160"      : 21.5949*0.040720, # Official 
-        "Madgraph_250vs160"      : 21.5949*0.048089, # Official
-        "MadgraphL_250vs160"     : 21.5949*0.048089, # Official
-        "MadgraphR_250vs160"     : 21.5949*0.048089, # Official
-        "Herwigpp_300vs150"      : 8.51615*0.061771, # Official
-        "Madgraph_300vs150"      : 8.51615*0.078449, # Official
-        "MadgraphR_300vs150"     : 8.51615*0.078449, # Official
-        "HerwigppR_300vs180"     : 8.51615*0.047643, # Official 
-        "Madgraph_300vs180"      : 8.51615*0.060136, # Official
-        "MadgraphM_300vs180"     : 8.51615*0.060136, # Official
-        "MadgraphR_300vs180"     : 8.51615*0.060136, # Official
-        "MadgraphL_300vs180"     : 8.51615*0.060136, # Official
-        "MadgraphFR_300vs180"    : 8.51615*0.216*0.216*0.7123521869, # Private
-        "MadgraphT_300vs180"     : 8.51615*0.216*0.216*0.7150234369, # Private
-        "HerwigppL_250vs160"     : 21.5949*0.04002850029, # Private
-        "HerwigppL_300vs180"     : 8.51615*0.04516371848, # Private
-        "Madgraph_250vs125"      : 1,  # Dummy
-        "MadgraphM_250vs125"     : 1,  # Dummy
-        "MadgraphL_250vs125"     : 1,  # Dummy
-        "MadgraphR_250vs125"     : 1,  # Dummy
-        "MadgraphFL_250vs125"    : 1,  # Dummy
-        "HerwigppL_250vs125"     : 1,  # Dummy
-        "SerhanFL_250vs125"      : 1,  # Dummy
-        "SerhanFR_250vs125"      : 1,  # Dummy
-        "MadgraphSlep_100vs1"    : 1,  # Dummy
-        "MadgraphFM_350vs270"    : 1,  # Dummy
-        "MadSpin_350vs270"       : 1,  # Dummy
-        "Marilea_350vs270"       : 1,  # Dummy
-        "Pythia_350vs270"        : 1,  # Dummy
-        "MadGraphFM_350vs230"    : 1,  # Dummy 
-        ##"MadSpinBW15_350vs230"   : 1,  # Dummy 
-        #"MadSpinBWN_350vs230"    : 1,  # Dummy 
-        #"MadSpinBW100_350vs230"  : 1,  # Dummy 
-        #"MadSpinBW1000_350vs230" : 1,  # Dummy 
-        "MadSpinBWN_350vs230"    : 1,  # Dummy 
-        "MadSpinBFFN_350vs230"   : 1,  # Dummy 
-        "MadSpinBFFNv2_350vs230" : 1,  # Dummy 
-        "MG5Py8_WpWm_Nominal"    : 1,  # Dummy 
-        "MG5Py8_WpWm_Up1Sigma"   : 1,  # Dummy 
-        "MG5Py8_WpWm_Dn1Sigma"   : 1,  # Dummy 
+        "Sherpa_221_llvv"         : 12.465,
+        "PowhegPy_ttbar"          : 696.11*1.1949*0.543,
+        "PowhegPy_ttbar_radHi"    : 783.73*1.0613*0.543,
+        "PowhegPy_ttbar_radLo"    : 783.73*1.0613*0.543,
+        "aMCatNLOHpp_ttbar"       : 694.59*1.1975*0.543,
+        "PowhegHpp_ttbar"         : 696.32*1.1926*0.543,
+        "PowhegPy_dilep_ttbar"    : 696.12*1.1949*0.1053,
+        "Sherpa_dilep_ttbar"      : 76.333*1.1484*1.0,
+        ### Moriond Samples :: END
+        ##"Sherpa_lvlv"            : 14.022*0.91,   # 361068 https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MC15SystematicUncertainties#VV_Diboson_V_W_Z 24/11/15
+        ##"Sherpa_lvlv_fac4"       : 14.022*0.91,   # 363072
+        ##"Sherpa_lvlv_fac025"     : 14.022*0.91,   # 363073
+        ##"Sherpa_lvlv_renorm4"    : 14.022*0.91,   # 363074
+        ##"Sherpa_lvlv_renorm025"  : 14.022*0.91,   # 363075
+        ##"Sherpa_lvlv_qsf4"       : 14.022*0.91,   # 363076
+        ##"Sherpa_lvlv_qsf025"     : 14.022*0.91,   # 363077
+        ##"Sherpa_lvlv_ckkw15"     : 14.022*0.91,   # 363299
+        ##"Sherpa_lvlv_ckkw30"     : 14.022*0.91,   # 363300
+        ##"Powheg_WWlvlv"          : 10.631,        # 361600
+        ##"Powheg_ZZllvv"          : 0.92498,       # 361604
+        ##"Powheg_ttbar"           : 831.76*0.543,  # 410000 => 696.11  1.1949  0.543
+        ##"Powheg_ttbar_radHi"     : 831.76*0.543,  # 410001 => 783.73  1.0613  0.543
+        ##"Powheg_ttbar_radLo"     : 831.76*0.543,  # 410002 => 611.1   1.3611  0.543
+        ##"aMCatNLO_ttbar"         : 831.76*0.543,  # 410003 => 694.59  1.1975  0.543
+        ##"aMCatNLOPy8_ttbar"      : 679.76*0.54393*1.2236,  # https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MC15TTbarSamplesPMG 8/7/2016 
+        ##"PowhegHpp_ttbar"        : 831.76*0.543,  # 410004 => 696.32  1.1926  0.543 
+        ##"Sherpa_ttbar_410021"    : 78.73*1.17,    # 410021 => 78.73   1.17    1. 
+        ##"Sherpa_ttbar_410189"    : 76.333*1.1484, # 410021 => https://twiki.cern.ch/twiki/bin/view/AtlasProtected/MC15TTbarSamplesPMG 
+        ##"Herwigpp_250vs160"      : 21.5949*0.040720, # Official 
+        ##"Madgraph_250vs160"      : 21.5949*0.048089, # Official
+        ##"MadgraphL_250vs160"     : 21.5949*0.048089, # Official
+        ##"MadgraphR_250vs160"     : 21.5949*0.048089, # Official
+        ##"Herwigpp_300vs150"      : 8.51615*0.061771, # Official
+        ##"Madgraph_300vs150"      : 8.51615*0.078449, # Official
+        ##"MadgraphR_300vs150"     : 8.51615*0.078449, # Official
+        ##"HerwigppR_300vs180"     : 8.51615*0.047643, # Official 
+        ##"Madgraph_300vs180"      : 8.51615*0.060136, # Official
+        ##"MadgraphM_300vs180"     : 8.51615*0.060136, # Official
+        ##"MadgraphR_300vs180"     : 8.51615*0.060136, # Official
+        ##"MadgraphL_300vs180"     : 8.51615*0.060136, # Official
+        ##"MadgraphFR_300vs180"    : 8.51615*0.216*0.216*0.7123521869, # Private
+        ##"MadgraphT_300vs180"     : 8.51615*0.216*0.216*0.7150234369, # Private
+        ##"HerwigppL_250vs160"     : 21.5949*0.04002850029, # Private
+        ##"HerwigppL_300vs180"     : 8.51615*0.04516371848, # Private
+        ##"Madgraph_250vs125"      : 1,  # Dummy
+        ##"MadgraphM_250vs125"     : 1,  # Dummy
+        ##"MadgraphL_250vs125"     : 1,  # Dummy
+        ##"MadgraphR_250vs125"     : 1,  # Dummy
+        ##"MadgraphFL_250vs125"    : 1,  # Dummy
+        ##"HerwigppL_250vs125"     : 1,  # Dummy
+        ##"SerhanFL_250vs125"      : 1,  # Dummy
+        ##"SerhanFR_250vs125"      : 1,  # Dummy
+        ##"MadgraphSlep_100vs1"    : 1,  # Dummy
+        ##"MadgraphFM_350vs270"    : 1,  # Dummy
+        ##"MadSpin_350vs270"       : 1,  # Dummy
+        ##"Marilea_350vs270"       : 1,  # Dummy
+        ##"Pythia_350vs270"        : 1,  # Dummy
+        ##"MadGraphFM_350vs230"    : 1,  # Dummy 
+        ####"MadSpinBW15_350vs230"   : 1,  # Dummy 
+        ###"MadSpinBWN_350vs230"    : 1,  # Dummy 
+        ###"MadSpinBW100_350vs230"  : 1,  # Dummy 
+        ###"MadSpinBW1000_350vs230" : 1,  # Dummy 
+        ##"MadSpinBWN_350vs230"    : 1,  # Dummy 
+        ##"MadSpinBFFN_350vs230"   : 1,  # Dummy 
+        ##"MadSpinBFFNv2_350vs230" : 1,  # Dummy 
+        ##"MG5Py8_WpWm_Nominal"    : 1,  # Dummy 
+        ##"MG5Py8_WpWm_Up1Sigma"   : 1,  # Dummy 
+        ##"MG5Py8_WpWm_Dn1Sigma"   : 1,  # Dummy 
     }.get(filename,"")
 
 # Define X titles
@@ -183,7 +197,7 @@ def getXtitle(variable):
         "mT2ll"           : "m_{T2}(ll) [GeV]",
         "ptll"            : "p_{T}(ll) [GeV]",
         "mll"             : "m(ll) [GeV]",
-        "mDRll"           : "m_{#Delta R} [GeV]", #"E_{V}^{P} [GeV]",
+        "mDRll"           : "M_{#Delta}^{R} [GeV]", #"E_{V}^{P} [GeV]",
         "RPT"             : "R_{PT}",
         "gamInvRp1"       : "1/#gamma_{P}^{PP}",
         "DPB_vSS"         : "#Delta#phi(#beta_{PP}^{LAB},p_{V}^{PP})",
@@ -246,13 +260,14 @@ def getXtitle(variable):
 # Define region cuts
 def getRegionTCut(region):
     # Stop2L regions
-    isOSDF          = "(@lepton_pt.size()==2&&isDF&&isOS&&lepton_pt[0]>20.&&lepton_pt[1]>20.&&(lepton_type[0]==2||lepton_type[0]==6)&&(lepton_type[1]==2||lepton_type[1]==6))&&mll>20."
-    isOSSF          = "(@lepton_pt.size()==2&&isSF&&isOS&&lepton_pt[0]>20.&&lepton_pt[1]>20.&&(lepton_type[0]==2||lepton_type[0]==6)&&(lepton_type[1]==2||lepton_type[1]==6))&&mll>20."
-    zVeto           = "((TMath::Abs(mll-91.2)>10.&&isSF)||(isDF))"
+    isOSDF          = "(@lepton_pt.size()==2&&isDF&&isOS&&lepton_pt[0]>25.&&lepton_pt[1]>20.&&(lepton_type[0]==2||lepton_type[0]==6)&&(lepton_type[1]==2||lepton_type[1]==6))&&mll>20."
+    isOSSF          = "(@lepton_pt.size()==2&&isSF&&isOS&&lepton_pt[0]>25.&&lepton_pt[1]>20.&&(lepton_type[0]==2||lepton_type[0]==6)&&(lepton_type[1]==2||lepton_type[1]==6))&&mll>20."
+    zVeto           = "((TMath::Abs(mll-91.2)>20.&&isSF)||(isDF))"
     bVeto           = "(@bjet_pt.size()==0)"
     bSelection      = "(@bjet_pt.size()>0)"
-    commonSRCuts    = "(RPT>0.5&&gamInvRp1>0.8&&DPB_vSS>(0.85*TMath::Abs(cosTheta_b)+1.8))" 
-    commonPreSRCuts = "(RPT>0.5&&gamInvRp1>0.8)" 
+    commonSRCuts    = "(RPT>0.7&&gamInvRp1>0.7&&DPB_vSS>(0.9*TMath::Abs(cosTheta_b)+1.6))" 
+    commonPreSRCuts = "(RPT>0.7&&gamInvRp1>0.7)" 
+    wmassCut        = "(TMath::Abs(truth_wmass[0]-80)<30.&&TMath::Abs(truth_wmass[1]-80)<30.)"
     return {
         # Actual regions
         "ST2L_SRw_SF"       : "("  + isOSSF + "&&" + commonSRCuts   + "&&mDRll>95.&&"  + bVeto      + "&&" + zVeto + ")",
@@ -260,21 +275,25 @@ def getRegionTCut(region):
         "ST2L_SRt_SF"       : "("  + isOSSF + "&&" + commonSRCuts   + "&&mDRll>110.&&" + bSelection + "&&" + zVeto + ")",
         "ST2L_SRt_DF"       : "("  + isOSDF + "&&" + commonSRCuts   + "&&mDRll>110.&&" + bSelection + ")",
         "ST2L_SRt_ALL"      : "((" + isOSSF + "||" + isOSDF + ")&&" + commonSRCuts + "&&mDRll>110.&&" + bSelection + "&&" + zVeto + ")",
-        "ST2L_CR_Top"       : "("  + isOSDF + "&&" + bSelection     + "&&mDRll>80.&&RPT>0.5&&DPB_vSS<(0.85*TMath::Abs(cosTheta_b)+1.8))",
-        "ST2L_CR_VV_SF"     : "("  + isOSSF + "&&" + bVeto          + "&&" + zVeto + "&&mDRll>30.&&RPT<0.5&&gamInvRp1>0.8&&DPB_vSS<(0.85*TMath::Abs(cosTheta_b)+1.8)&&met_et>70.)",
-        "ST2L_CR_VV_DF"     : "("  + isOSDF + "&&" + bVeto          +                "&&mDRll>30.&&RPT<0.5&&gamInvRp1>0.8&&DPB_vSS<(0.85*TMath::Abs(cosTheta_b)+1.8))",
+        "ST2L_CR_Top"       : "("  + isOSDF + "&&" + bSelection     + "&&mDRll>80.&&RPT>0.7&&DPB_vSS<(0.9*TMath::Abs(cosTheta_b)+1.6))", ##!!!
+        "ST2L_CR_VV_SF"     : "("  + isOSSF + "&&" + bVeto          + "&&" + zVeto + "&&mDRll>70.&&RPT<0.5&&gamInvRp1>0.7&&DPB_vSS<(0.9*TMath::Abs(cosTheta_b)+1.6))",
+        "ST2L_CR_VV_DF"     : "("  + isOSDF + "&&" + bVeto          +                "&&mDRll>50.&&RPT<0.5&&gamInvRp1>0.7&&DPB_vSS<(0.9*TMath::Abs(cosTheta_b)+1.6))",
         # For modeling
+        "ST2L_SR_SF_model"  : "("  + isOSSF + "&&" + commonSRCuts    + "&&mDRll>95.&&" + zVeto + ")",
+        "ST2L_SR_DF_model"  : "("  + isOSDF + "&&" + commonSRCuts    + "&&mDRll>95.)",
         "ST2L_preSRw_SF"    : "("  + isOSSF + "&&" + commonPreSRCuts + "&&mDRll>95.&&"  + bVeto      + "&&" + zVeto + ")",
         "ST2L_preSRw_DF"    : "("  + isOSDF + "&&" + commonPreSRCuts + "&&mDRll>95.&&"  + bVeto      + ")",
         "ST2L_preSRt_SF"    : "("  + isOSSF + "&&" + commonPreSRCuts + "&&mDRll>110.&&" + bSelection + "&&" + zVeto + ")",
         "ST2L_preSRt_DF"    : "("  + isOSDF + "&&" + commonPreSRCuts + "&&mDRll>110.&&" + bSelection + ")",
         "ST2L_preSRt_ALL"   : "((" + isOSSF + "||" + isOSDF + ")&&"  + commonPreSRCuts  + "&&mDRll>110.&&" + bSelection + "&&" + zVeto + ")",
         # For plotting
-        "ST2L_incTT_SF"     : "("  + isOSSF + "&&mDRll>95.&&RPT>0.5&&gamInvRp1>0.8)",
-        "ST2L_incTT_DF"     : "("  + isOSDF + "&&mDRll>95.&&RPT>0.5&&gamInvRp1>0.8)",
-        "ST2L_incTT_ALL"    : "((" + isOSSF + "||" + isOSDF + ")&&mDRll>95.&&RPT>0.5&&gamInvRp1>0.8)",
-        "ST2L_incVV_SF"     : "("  + isOSSF + "&&" + zVeto  + "&&mDRll>95.&&gamInvRp1>-99)", #&&RPT>0.5&&DPB_vSS>(0.85*TMath::Abs(cosTheta_b)+1.8))",
-        "ST2L_incVV_DF"     : "("  + isOSDF +                 "&&mDRll>95.&&gamInvRp1>-99)", #&&RPT>0.5&&DPB_vSS>(0.85*TMath::Abs(cosTheta_b)+1.8))",
+        "ST2L_incTT_SF"     : "("  + isOSSF + "&&mDRll>95.&&RPT>0.7&&gamInvRp1>0.7)",
+        "ST2L_incTT_DF"     : "("  + isOSDF + "&&mDRll>95.&&RPT>0.7&&gamInvRp1>0.7)",
+        "ST2L_incTT_ALL"    : "((" + isOSSF + "||" + isOSDF + ")&&mDRll>95.&&RPT>0.7&&gamInvRp1>0.7&&DPB_vSS>(0.9*TMath::Abs(cosTheta_b)+1.6))",  ##!!!  
+        #"ST2L_incVV_SF"     : "(mcEventWeight[5]<10&&"  + isOSSF + "&&" + zVeto  + "&&mDRll>95.&&gamInvRp1>-99&&RPT>0.7&&DPB_vSS>(0.9*TMath::Abs(cosTheta_b)+1.6))",
+        #"ST2L_incVV_DF"     : "(mcEventWeight[5]<10&&"  + isOSDF +                 "&&mDRll>95.&&gamInvRp1>-99&&RPT>0.7&&DPB_vSS>(0.9*TMath::Abs(cosTheta_b)+1.6))",
+        "ST2L_incVV_SF"     : "("  + isOSSF + "&&" + zVeto  + "&&mDRll>95.&&gamInvRp1>0.7&&RPT>0.7&&DPB_vSS>(0.9*TMath::Abs(cosTheta_b)+1.6))",
+        "ST2L_incVV_DF"     : "("  + isOSDF +                 "&&mDRll>95.&&gamInvRp1>0.7&&RPT>0.7&&DPB_vSS>(0.9*TMath::Abs(cosTheta_b)+1.6))",
         "ST2L_looseSRw_SF"  : "("  + isOSSF + "&&" + bVeto      + "&&" + zVeto + ")",
         "ST2L_looseSRw_DF"  : "("  + isOSDF + "&&" + bVeto      + ")",
         "ST2L_looseSRt_SF"  : "("  + isOSSF + "&&" + bSelection + "&&" + zVeto + ")",
@@ -324,8 +343,8 @@ def getBinInformation(variable):
         "mT2ll"         : [ 30, 0, 300], #[[0,10,20,30,40,50,60,70,80,100,120,150,200,300,500]],
         "ptll"          : [ 40, 0, 400], 
         "mll"           : [ 40, 0, 400], #[[0,20,40,60,80,100,120,140,160,180,200,220,240,260,280,300,320,340,360,400,500,1000]],
-        "mDRll"         : [ 30, 0, 300], #[[0,10,20,30,40,50,60,70,80,95,110,200]],
-        "RPT"           : [ 10, 0, 1],
+        "mDRll"         : [[0,10,20,30,40,50,60,70,80,95,110,200]],
+        "RPT"           : [ 10, 0., 1.],
         "gamInvRp1"     : [ 10, 0, 1],
         "cosTheta_b"    : [ 10, -1, 1],
         "DPB_vSS"       : [ 8, 0, 3.2],
@@ -355,7 +374,7 @@ def getBinInformation(variable):
         "truth_n1pt"    : [ 50, 0, 1000],
         "truth_n1mass"  : [20, 169.5, 189.5],
         "truth_wpt"     : [ 50,  0, 1000],
-        "truth_wmass"   : [ 100,  0, 1000],
+        "truth_wmass"   : [ 40,  0, 200],
         "truth_wbpt"    : [ 50,  0, 1000],
         "truth_wbmass"  : [ 50, 50, 150],
         "TMath::Cos(truth_thetal)"  : [10, -1, 1], # Cos of thetal

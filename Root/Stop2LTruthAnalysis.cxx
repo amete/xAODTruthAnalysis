@@ -389,13 +389,36 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   //EL_RETURN_CHECK("execute()",event->retrieve( truthEvents, "TruthEvents"));  
   ////// truthEvents->at(0)->weights().at(0) == eventInfo->mcEventWeights().at(0)
 
-  // Truth Vertex
-  const xAOD::TruthVertexContainer* truthVertices = 0;
-  EL_RETURN_CHECK("execute()",event->retrieve( truthVertices, "TruthVertices"));
+  //// Truth Vertex
+  //const xAOD::TruthVertexContainer* truthVertices = 0;
+  //EL_RETURN_CHECK("execute()",event->retrieve( truthVertices, "TruthVertices"));
+
+  // Truth Bosons  - only TRTUH3
+  const xAOD::TruthParticleContainer* truthBosons = 0;
+  EL_RETURN_CHECK("execute()",event->retrieve( truthBosons, "TruthBoson"));
+  int nWps = 0; int nWms = 0;
+  for(const auto& truthPar : *truthBosons) {
+      if(!truthPar->isW()) continue;
+      //Info("truthPar","Found W w/ status %i nChildren %i nParents %i pdgId %i mass %.2f",truthPar->status(),truthPar->nChildren(), truthPar->nParents(), truthPar->pdgId(), truthPar->m()*MEVtoGEV);
+      // Pythia 
+      if(truthPar->status()==3) { 
+        if(truthPar->pdgId()>0) { m_br_truth_wmass.push_back(truthPar->m()*MEVtoGEV); nWps++; }
+        else                    { m_br_truth_wmass.push_back(truthPar->m()*MEVtoGEV); nWms++; } 
+      }
+      // aMC@NLO
+      else if (truthPar->status()==11) {
+        if(truthPar->pdgId()>0) { if(nWps==0) { m_br_truth_wmass.push_back(truthPar->m()*MEVtoGEV); nWps++; } }
+        else                    { if(nWms==0) { m_br_truth_wmass.push_back(truthPar->m()*MEVtoGEV); nWms++; } } 
+      } 
+  }
+
+  if(nWps+nWms != 2) {
+    Info("execute()",">>Found %i Ws",nWps+nWms);
+  }
 
   // Retrieve the truth leptons
-  const xAOD::TruthParticleContainer* truthParticles = 0;
-  EL_RETURN_CHECK("execute()",event->retrieve( truthParticles, "TruthParticles"));
+  //const xAOD::TruthParticleContainer* truthParticles = 0;
+  //EL_RETURN_CHECK("execute()",event->retrieve( truthParticles, "TruthParticles"));
   const xAOD::TruthParticleContainer* truthElectrons = 0;
   const xAOD::TruthParticleContainer* truthMuons = 0;
   if(!isRecoSample) {
@@ -724,7 +747,7 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
     if( truthEl->absPdgId() != 11    ) continue; // only electrons
     if( truthEl->status() != 1       ) continue; // only final state objects
     if( truthEl->pt()*MEVtoGEV < 10. ) continue; // pT > 10 GeV
-    if( fabs(truthEl->eta()) > 2.8   ) continue; // |eta| < 2.5
+    if( fabs(truthEl->eta()) > 2.8   ) continue; // |eta| < 2.8
 
     electrons->push_back(truthEl); // store if passed all
   } // end loop over truth electrons
@@ -733,7 +756,7 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
     if( truthMu->absPdgId() != 13    ) continue; // only muons
     if( truthMu->status() != 1       ) continue; // only final state objects
     if( truthMu->pt()*MEVtoGEV < 10. ) continue; // pT > 10 GeV
-    if( fabs(truthMu->eta()) > 2.8   ) continue; // |eta| < 2.5
+    if( fabs(truthMu->eta()) > 2.8   ) continue; // |eta| < 2.8
    
     muons->push_back(truthMu); // store if passed all
   } // end loop over truth muons
@@ -757,13 +780,13 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   // Sort by Pt
   std::sort(jets->begin(),jets->end(),SortByPt());
 
-  //// Overlap removal
-  //// Remove jets from electrons
-  //PhysicsTools::l_j_overlap( *electrons, *jets , 0.20, true );
-  //// Remove electrons from jets
-  //PhysicsTools::l_j_overlap( *electrons, *jets , 0.40, false);
-  //// Remove muons from jets
-  //PhysicsTools::l_j_overlap( *muons    , *jets , 0.40, false);
+  // Overlap removal
+  // Remove jets from electrons
+  PhysicsTools::l_j_overlap( *electrons, *jets , 0.20, true );
+  // Remove electrons from jets
+  PhysicsTools::l_j_overlap( *electrons, *jets , 0.40, false);
+  // Remove muons from jets
+  PhysicsTools::l_j_overlap( *muons    , *jets , 0.40, false);
 
   // Combine electrons and muons into leptons
   std::vector<const xAOD::TruthParticle*> *leptons = new std::vector<const xAOD::TruthParticle*>();
@@ -1044,7 +1067,7 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
       m_br_truth_wbpt.push_back(wbPt[ii]*MEVtoGEV);
       m_br_truth_wbmass.push_back(wbMass[ii]*MEVtoGEV);
       m_br_truth_wpt.push_back(wPt[ii]*MEVtoGEV);
-      m_br_truth_wmass.push_back(wMass[ii]*MEVtoGEV);
+      //m_br_truth_wmass.push_back(wMass[ii]*MEVtoGEV);
       m_br_truth_thetal.push_back(thetal[ii]);
     }
     // Leptons
