@@ -102,6 +102,8 @@ public:
   float m_br_gamInvRp1; //!
   float m_br_RPT; //!
   float m_br_DPB_vSS; //!
+  float m_br_dphi_boost; //!
+  float m_br_njets_bC; //!
 
   // this is a standard constructor
   Stop2LTruthAnalysis ();

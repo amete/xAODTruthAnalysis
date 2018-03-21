@@ -279,6 +279,7 @@ EL::StatusCode Ewk2LTruthAnalysis :: execute ()
   // Retrieve the truth leptons
   const xAOD::TruthParticleContainer* truthParticles = 0;
   EL_RETURN_CHECK("execute()",event->retrieve( truthParticles, "TruthParticles"));
+  //EL_RETURN_CHECK("execute()",event->retrieve( truthParticles, "TruthBSM"));
   const xAOD::TruthParticleContainer* truthElectrons = 0;
   EL_RETURN_CHECK("execute()",event->retrieve( truthElectrons, "TruthElectrons"));
   const xAOD::TruthParticleContainer* truthMuons = 0;
@@ -287,6 +288,7 @@ EL::StatusCode Ewk2LTruthAnalysis :: execute ()
   // Find SUSY ID
   int pdgid1 = 0, pdgid2 = 0, susyID = -1;
   if(!FindSusyHardProc(truthParticles,pdgid1,pdgid2,false)) {
+  //if(!FindSusyHardProc(truthParticles,pdgid1,pdgid2,true)) {
     Info("execute()", "Cannot find SUSY process id for event %i", m_eventCounter );  
   } else {
     if(abs(pdgid1) == abs(pdgid2)) {

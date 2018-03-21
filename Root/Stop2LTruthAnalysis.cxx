@@ -30,8 +30,8 @@
 // ROOT include(s):
 #include <TFile.h>
 
-// RestFrames stuff
-#include "RestFrames/RestFrames.hh"
+//// RestFrames stuff
+//#include "RestFrames/RestFrames.hh"
 
 /// Helper macro for checking xAOD::TReturnCode return values
 #define EL_RETURN_CHECK( CONTEXT, EXP )                     \
@@ -61,7 +61,7 @@ struct SortByPt {
 // this is needed to distribute the algorithm to the workers
 ClassImp(Stop2LTruthAnalysis)
 
-using namespace RestFrames;
+//using namespace RestFrames;
 
 Stop2LTruthAnalysis :: Stop2LTruthAnalysis ()
 {
@@ -255,6 +255,8 @@ EL::StatusCode Stop2LTruthAnalysis :: histInitialize ()
     outputTree->Branch("RPT"           /* "RPT"           */, &m_br_RPT              ); 
     outputTree->Branch("gamInvRp1"     /* "gamInvRp1"     */, &m_br_gamInvRp1        ); 
     outputTree->Branch("DPB_vSS"       /* "DPB_vSS"       */, &m_br_DPB_vSS          ); 
+    outputTree->Branch("dphi_boost"    /* ""              */, &m_br_dphi_boost       ); 
+    outputTree->Branch("njets_bC"      /* ""              */, &m_br_njets_bC         ); 
   }
 
   return EL::StatusCode::SUCCESS;
@@ -344,7 +346,7 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   // Clear variables
   if(saveTree) {
     m_br_isSF = m_br_isDF = m_br_isOS = m_br_isNOHISR = m_br_isSS = false;
-    m_br_eventNumber = m_br_met_et = m_br_met_phi = m_br_mT2ll = m_br_dphi_met_pbll = 0.; 
+    m_br_eventNumber = m_br_met_et = m_br_met_phi = m_br_mT2ll = m_br_dphi_met_pbll = m_br_dphi_boost = m_br_njets_bC = 0.; 
     m_br_mDRll = m_br_RPT = m_br_gamInvRp1 = m_br_DPB_vSS = m_br_cosTheta_b = 0;
     m_br_truth_ststpt = m_br_truth_ststmass = m_br_truth_ststphi = m_br_truth_n1n1pt = m_br_truth_n1n1phi = 0. ; 
     m_br_mll = m_br_pbll = m_br_ptll = m_br_dphill = m_br_r1 = 0.; 
@@ -868,7 +870,7 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
     jCounter++;
   }
 
-  if(saveHists) {
+if(saveHists) {
     h_hists1D.at(m_nameToIndex1D["lep0Pt"]       )->Fill(lep0_tlv.Pt()*MEVtoGEV     ,eventWeight);
     h_hists1D.at(m_nameToIndex1D["lep0Eta"]      )->Fill(lep0_tlv.Eta()             ,eventWeight);
     h_hists1D.at(m_nameToIndex1D["lep0Phi"]      )->Fill(lep0_tlv.Phi()             ,eventWeight);
@@ -941,100 +943,111 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
   double RPT_jigsaw       = -999.; // "R_p_{T}"
   double gamInvRp1_jigsaw = -999.;
 
-  // declare the frames
-  LabRecoFrame lab("lab", "lab");
-  DecayRecoFrame ss("ss", "ss");
-  DecayRecoFrame s1("s1", "s1");
-  DecayRecoFrame s2("s2", "s2");
-  VisibleRecoFrame v1("v1", "v1");
-  VisibleRecoFrame v2("v2", "v2");
-  InvisibleRecoFrame i1("i1", "i1");
-  InvisibleRecoFrame i2("i2", "i2");
+//  // declare the frames
+//  LabRecoFrame lab("lab", "lab");
+//  DecayRecoFrame ss("ss", "ss");
+//  DecayRecoFrame s1("s1", "s1");
+//  DecayRecoFrame s2("s2", "s2");
+//  VisibleRecoFrame v1("v1", "v1");
+//  VisibleRecoFrame v2("v2", "v2");
+//  InvisibleRecoFrame i1("i1", "i1");
+//  InvisibleRecoFrame i2("i2", "i2");
+//
+//  // connect the frames
+//  lab.SetChildFrame(ss);
+//  ss.AddChildFrame(s1);
+//  ss.AddChildFrame(s2);
+//  s1.AddChildFrame(v1);
+//  s1.AddChildFrame(i1);
+//  s2.AddChildFrame(v2);
+//  s2.AddChildFrame(i2);
+//
+//  // check that the decay tree is connected properly
+//  if(!lab.InitializeTree()) {
+//    printf("makeMiniNtuple_Stop2L\t RestFrames::InitializeTree ERROR (\"%i\")    Unable to initialize tree from lab frame. Exitting. ",__LINE__);
+//    exit(1); 
+//  }
+//
+//  // define groups
+//  InvisibleGroup inv("inv", "invsible group jigsaws");
+//  inv.AddFrame(i1);
+//  inv.AddFrame(i2);
+//
+//  CombinatoricGroup vis("vis", "visible object jigsaws");
+//  vis.AddFrame(v1);
+//  vis.SetNElementsForFrame(v1, 1, false);
+//  vis.AddFrame(v2);
+//  vis.SetNElementsForFrame(v2, 1, false);
+//
+//  SetMassInvJigsaw MinMassJigsaw("MinMass", "Invisible system mass jigsaw");
+//  inv.AddJigsaw(MinMassJigsaw);
+//
+//  SetRapidityInvJigsaw RapidityJigsaw("RapidityJigsaw", "invisible system rapidity jigsaw");
+//  inv.AddJigsaw(RapidityJigsaw);
+//  RapidityJigsaw.AddVisibleFrames(lab.GetListVisibleFrames());
+//
+//  ContraBoostInvJigsaw ContraBoostJigsaw("ContraBoostJigsaw", "ContraBoost Invariant Jigsaw");
+//  inv.AddJigsaw(ContraBoostJigsaw);
+//  ContraBoostJigsaw.AddVisibleFrames((s1.GetListVisibleFrames()), 0);
+//  ContraBoostJigsaw.AddVisibleFrames((s2.GetListVisibleFrames()), 1);
+//  ContraBoostJigsaw.AddInvisibleFrame(i1, 0);
+//  ContraBoostJigsaw.AddInvisibleFrame(i2, 1);
+//
+//  MinMassesCombJigsaw HemiJigsaw("hemi_jigsaw", "Minimize m_{v_{1,2}} jigsaw");
+//  vis.AddJigsaw(HemiJigsaw);
+//  HemiJigsaw.AddFrame(v1, 0);
+//  HemiJigsaw.AddFrame(v2, 1);
+//
+//  // check that the jigsaws are in place
+//  if(!lab.InitializeAnalysis()) {
+//    printf("makeMiniNtuple_Stop2L\t RestFrames::InitializeAnalysis ERROR (\"%i\")    Unable to initialize analysis from lab frame. Exitting.",__LINE__);
+//    exit(1);
+//  }
+//
+//  // clear the event for sho
+//  lab.ClearEvent();
+//
+//  // set the met
+//  TVector3 met3vector(met_tlv.Px(), met_tlv.Py(), met_tlv.Pz());
+//  inv.SetLabFrameThreeVector(met3vector);
+//
+//  // add leptons to the visible group
+//  // leptons holds TLorentzVectors
+//  vis.AddLabFrameFourVector(lep0_tlv);
+//  vis.AddLabFrameFourVector(lep1_tlv);
+//
+//  // analayze that
+//  if(!lab.AnalyzeEvent()) {
+//    printf("makeMiniNtuple_Stop2L\t RestFrames::AnalyzeEvent ERROR. Exitting.");
+//    exit(1);
+//  }
+//
+//  /// system mass
+//  double shat_jigsaw = ss.GetMass();
+//
+//  // RATIO OF CM pT
+//  TVector3 vPTT = ss.GetFourVector(lab).Vect();
+//  RPT_jigsaw = vPTT.Pt() / (vPTT.Pt() + shat_jigsaw / 4.);
+//
+//  // shapes
+//  gamInvRp1_jigsaw = ss.GetVisibleShape();
+//
+//  // MDR_jigsaw
+//  MDR_jigsaw = 2.0 * v1.GetEnergy(s1);
+//
+//  // BOOST ANGLES
+//  DPB_vSS_jigsaw = ss.GetDeltaPhiBoostVisible();
 
-  // connect the frames
-  lab.SetChildFrame(ss);
-  ss.AddChildFrame(s1);
-  ss.AddChildFrame(s2);
-  s1.AddChildFrame(v1);
-  s1.AddChildFrame(i1);
-  s2.AddChildFrame(v2);
-  s2.AddChildFrame(i2);
-
-  // check that the decay tree is connected properly
-  if(!lab.InitializeTree()) {
-    printf("makeMiniNtuple_Stop2L\t RestFrames::InitializeTree ERROR (\"%i\")    Unable to initialize tree from lab frame. Exitting. ",__LINE__);
-    exit(1); 
+  // b-C jets
+  int nbCJets = 0;
+  for(const auto& truthJet: *jets) {
+    if( truthJet->pt()*MEVtoGEV < 25. ) continue;
+    if( fabs(truthJet->eta()) > 2.5   ) continue;
+    nbCJets++;
   }
 
-  // define groups
-  InvisibleGroup inv("inv", "invsible group jigsaws");
-  inv.AddFrame(i1);
-  inv.AddFrame(i2);
-
-  CombinatoricGroup vis("vis", "visible object jigsaws");
-  vis.AddFrame(v1);
-  vis.SetNElementsForFrame(v1, 1, false);
-  vis.AddFrame(v2);
-  vis.SetNElementsForFrame(v2, 1, false);
-
-  SetMassInvJigsaw MinMassJigsaw("MinMass", "Invisible system mass jigsaw");
-  inv.AddJigsaw(MinMassJigsaw);
-
-  SetRapidityInvJigsaw RapidityJigsaw("RapidityJigsaw", "invisible system rapidity jigsaw");
-  inv.AddJigsaw(RapidityJigsaw);
-  RapidityJigsaw.AddVisibleFrames(lab.GetListVisibleFrames());
-
-  ContraBoostInvJigsaw ContraBoostJigsaw("ContraBoostJigsaw", "ContraBoost Invariant Jigsaw");
-  inv.AddJigsaw(ContraBoostJigsaw);
-  ContraBoostJigsaw.AddVisibleFrames((s1.GetListVisibleFrames()), 0);
-  ContraBoostJigsaw.AddVisibleFrames((s2.GetListVisibleFrames()), 1);
-  ContraBoostJigsaw.AddInvisibleFrame(i1, 0);
-  ContraBoostJigsaw.AddInvisibleFrame(i2, 1);
-
-  MinMassesCombJigsaw HemiJigsaw("hemi_jigsaw", "Minimize m_{v_{1,2}} jigsaw");
-  vis.AddJigsaw(HemiJigsaw);
-  HemiJigsaw.AddFrame(v1, 0);
-  HemiJigsaw.AddFrame(v2, 1);
-
-  // check that the jigsaws are in place
-  if(!lab.InitializeAnalysis()) {
-    printf("makeMiniNtuple_Stop2L\t RestFrames::InitializeAnalysis ERROR (\"%i\")    Unable to initialize analysis from lab frame. Exitting.",__LINE__);
-    exit(1);
-  }
-
-  // clear the event for sho
-  lab.ClearEvent();
-
-  // set the met
-  TVector3 met3vector(met_tlv.Px(), met_tlv.Py(), met_tlv.Pz());
-  inv.SetLabFrameThreeVector(met3vector);
-
-  // add leptons to the visible group
-  // leptons holds TLorentzVectors
-  vis.AddLabFrameFourVector(lep0_tlv);
-  vis.AddLabFrameFourVector(lep1_tlv);
-
-  // analayze that
-  if(!lab.AnalyzeEvent()) {
-    printf("makeMiniNtuple_Stop2L\t RestFrames::AnalyzeEvent ERROR. Exitting.");
-    exit(1);
-  }
-
-  /// system mass
-  double shat_jigsaw = ss.GetMass();
-
-  // RATIO OF CM pT
-  TVector3 vPTT = ss.GetFourVector(lab).Vect();
-  RPT_jigsaw = vPTT.Pt() / (vPTT.Pt() + shat_jigsaw / 4.);
-
-  // shapes
-  gamInvRp1_jigsaw = ss.GetVisibleShape();
-
-  // MDR_jigsaw
-  MDR_jigsaw = 2.0 * v1.GetEnergy(s1);
-
-  // BOOST ANGLES
-  DPB_vSS_jigsaw = ss.GetDeltaPhiBoostVisible();
+  // deltaPhiBoost
+  double deltaPhiBoost = met_tlv.DeltaPhi(lep0_tlv+lep1_tlv+met_tlv);
 
   // Fill Tree
   if(saveTree) {
@@ -1139,6 +1152,8 @@ EL::StatusCode Stop2LTruthAnalysis :: execute ()
     m_br_gamInvRp1     = gamInvRp1_jigsaw;
     m_br_RPT           = RPT_jigsaw;
     m_br_DPB_vSS       = DPB_vSS_jigsaw;
+    m_br_dphi_boost    = deltaPhiBoost;
+    m_br_njets_bC      = nbCJets;
     outputTree->Fill();
   }
 

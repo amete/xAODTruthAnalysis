@@ -91,6 +91,24 @@ def main():
         options.varname    = "mDRll"                                    # Dummy variable
         options.regionname = "ST2L_incTT_ALL,ST2L_CR_Top"               # 0 is SR 1 is CR
         options.luminosity = 35000.0                                   # Luminosity should cancel in the calculation
+    elif options.process == "STBC_TT_SRSF_MORIOND17":
+        options.inputname  = "PowhegPy_ttbar,PowhegPy_ttbar_radHi,PowhegPy_ttbar_radLo,PowhegHpp_ttbar,aMCatNLOHpp_ttbar,Sherpa_dilep_ttbar"        # Samples to be used, first one is nominal
+        options.grouping   = "NONE"                                     # Combination : first one is nominal
+        options.varname    = "mDRll"                                    # Dummy variable
+        options.regionname = "STBC_SRB140_SF,STBC_CR_Top"               # 0 is SR 1 is CR
+        options.luminosity = 35000.0                                   # Luminosity should cancel in the calculation
+    elif options.process == "STBC_TT_SRDF_MORIOND17":
+        options.inputname  = "PowhegPy_ttbar,PowhegPy_ttbar_radHi,PowhegPy_ttbar_radLo,PowhegHpp_ttbar,aMCatNLOHpp_ttbar,Sherpa_dilep_ttbar"        # Samples to be used, first one is nominal
+        options.grouping   = "NONE"                                     # Combination : first one is nominal
+        options.varname    = "mDRll"                                    # Dummy variable
+        options.regionname = "STBC_SRB140_DF,STBC_CR_Top"               # 0 is SR 1 is CR
+        options.luminosity = 35000.0                                   # Luminosity should cancel in the calculation
+    elif options.process == "STBC_TT_SRALL_MORIOND17":
+        options.inputname  = "PowhegPy_ttbar,PowhegPy_ttbar_radHi,PowhegPy_ttbar_radLo,PowhegHpp_ttbar,aMCatNLOHpp_ttbar,Sherpa_dilep_ttbar"        # Samples to be used, first one is nominal
+        options.grouping   = "NONE"                                     # Combination : first one is nominal
+        options.varname    = "mDRll"                                    # Dummy variable
+        options.regionname = "STBC_SRB140_ALL,STBC_CR_Top"               # 0 is SR 1 is CR
+        options.luminosity = 35000.0                                   # Luminosity should cancel in the calculation
     else:
         print("ERROR :: Unknown process %s, quitting..." %(options.process))
         return
@@ -131,7 +149,7 @@ def main():
         control_region_count    = histogramsGrouped[ii][1][0].IntegralAndError(0,-1,control_region_unc)
         control_region_unc_perc = (control_region_unc/control_region_count)*100 if control_region_count !=0 else 0.
         transfer_factors[ii] = signal_region_count/control_region_count 
-        if groupList[ii] != "PowhegPy_ttbar_radHi" and groupList[ii] != "PowhegPy_ttbar_radLo" and groupList[ii] != "PowhegPy_dilep_ttbar" and groupList[ii] != "aMCatNLOHpp_ttbar":       
+        if groupList[ii] != "PowhegPy_ttbar_radHi" and groupList[ii] != "PowhegPy_ttbar_radLo" and groupList[ii] != "PowhegPy_dilep_ttbar" and groupList[ii] != "aMCatNLOHpp_ttbar" and groupList[ii] != "Sherpa_dilep_ttbar":       
             print("Sample %s \t\t (%.2f fb-1) SR count %.2f +/- %.2f (%3.2f%%) CR count %.2f +/- %.2f (%3.2f%%) TF is %.2e"
                 %(groupList[ii]         ,options.luminosity*1.e-3,
                       signal_region_count   ,signal_region_unc, signal_region_unc_perc, 

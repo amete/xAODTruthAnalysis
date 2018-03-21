@@ -1,9 +1,11 @@
 #!/bin/usr/python
 import os
 
-nfiles     = 5
-folder_in  = "/data/uclhc/uci/user/amete/truth_analysis/inputs/sample_list"
-folder_out = "/data/uclhc/uci/user/amete/truth_analysis/inputs/sample_list_split"
+nfiles     = 1
+folder_in  = "/tmp/amete/list_top_samples/sherpa"
+folder_out = "/tmp/amete/list_top_samples/sherpa_split"
+#folder_in  = "/data/uclhc/uci/user/amete/truth_analysis_Moriond2017/inputs/top_samples_list_p2949"
+#folder_out = "/data/uclhc/uci/user/amete/truth_analysis_Moriond2017/inputs/top_samples_list_p2949_split"
 
 def file_len(f):
     for i, l in enumerate(f):

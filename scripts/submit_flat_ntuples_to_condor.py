@@ -6,14 +6,15 @@ import subprocess
 
 ana_name            = "runStop2LTruth"
 tar_location        = "/data/uclhc/uci/user/amete/"
-out_dir             = "/data/uclhc/uci/user/amete/truth_analysis_run/outputs_3/" 
-log_dir             = "/data/uclhc/uci/user/amete/truth_analysis_run/logs_3/" 
-tarred_dir          = "truth_analysis/"
-filelist_dir        = "/data/uclhc/uci/user/amete/truth_analysis/inputs/"
-in_job_filelist_dir = "/truth_analysis/inputs/"
+out_dir             = "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/outputs_4/" 
+log_dir             = "/data/uclhc/uci/user/amete/truth_analysis_run_Moriond2017/logs_4/" 
+tarred_dir          = "truth_analysis_Moriond2017/"
+filelist_dir        = "/data/uclhc/uci/user/amete/truth_analysis_Moriond2017/inputs/"
+in_job_filelist_dir = "/truth_analysis_Moriond2017/inputs/"
 
-samples = ["sample_list_split"]
-#samples = ["mc15_410159_split"]
+samples = ["top_samples_list_p2949_split"]
+#samples = ["sample_list_split"]
+##samples = ["mc15_410159_split"]
 
 doBrick = True  #False
 doLocal = True 
@@ -23,7 +24,7 @@ doUC    = False #True
 def main():
     print "SubmitCondorSF"
 
-    submitMissing=True
+    submitMissing=False
     if submitMissing:
         missing_dsids     = []
         missing_dsid_file = open('%s/missing.txt'%(out_dir))
