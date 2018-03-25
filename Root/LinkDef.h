@@ -2,6 +2,7 @@
 #include <xAODTruthAnalysis/Stop2LTruthAnalysis.h>
 #include <xAODTruthAnalysis/Ewk2LTruthAnalysis.h>
 #include <xAODTruthAnalysis/StrongSS3LTruthAnalysis.h>
+#include <xAODTruthAnalysis/WWbbTruthAnalysis.h>
 
 #ifdef __CINT__
 
@@ -17,4 +18,5 @@
 #pragma link C++ class Stop2LTruthAnalysis+;
 #pragma link C++ class Ewk2LTruthAnalysis+;
 #pragma link C++ class StrongSS3LTruthAnalysis+;
+#pragma link C++ class WWbbTruthAnalysis+;
 //#endif
